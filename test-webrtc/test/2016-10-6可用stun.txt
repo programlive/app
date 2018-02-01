@@ -1,0 +1,79 @@
+stun:stun.counterpath.com
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+  <script src="http://app.ruizhen.net/test-webrtc/adapter.js"></script>
+    <script src="http://app.ruizhen.net/test-webrtc/common.js"></script>
+<script>
+/*
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+ */
+var begin;
+var pc;
+var candidates;
+ var iceServer = {"iceServers": [{"urls": "stun:stun.counterpath.com"}]};
+  pc = new RTCPeerConnection(iceServer);
+ // console.log(iceServer);
+  pc.onicecandidate = iceCallback;
+  pc.createOffer(
+    {offerToReceiveAudio: 1}
+  ).then(
+    gotDescription,
+    noDescription
+  );
+function gotDescription(desc) {
+  begin = window.performance.now();
+  candidates = [];
+  pc.setLocalDescription(desc);
+}
+
+function noDescription(error) {
+  console.log('Error creating offer: ', error);
+}
+
+// Parse a candidate:foo string into an object, for easier use by other methods.
+function parseCandidate(text) {
+  var candidateStr = 'candidate:';
+  var pos = text.indexOf(candidateStr) + candidateStr.length;
+  var fields = text.substr(pos).split(' ');
+  return {
+    'component': fields[1],
+    'type': fields[7],
+    'foundation': fields[0],
+    'protocol': fields[2],
+    'address': fields[4],
+    'port': fields[5],
+    'priority': fields[3]
+  };
+}
+// Parse the uint32 PRIORITY field into its constituent parts from RFC 5245,
+// type preference, local preference, and (256 - component ID).
+// ex: 126 | 32252 | 255 (126 is host preference, 255 is component ID 1)
+function formatPriority(priority) {
+  var s = '';
+  s += (priority >> 24);
+  s += ' | ';
+  s += (priority >> 8) & 0xFFFF;
+  s += ' | ';
+  s += priority & 0xFF;
+  return s;
+}
+
+
+function iceCallback(event) {
+  var elapsed = ((window.performance.now() - begin) / 1000).toFixed(3);
+  if (event.candidate) {
+    var c = parseCandidate(event.candidate.candidate);
+    console.log( "time:" +elapsed+ " component:" + c.component + " type:" + c.type + " foundation:" +  c.foundation + " protocol:" + c.protocol  + " address:" + c.address + ":" + c.port + " priority:" + formatPriority(c.priority));
+    candidates.push(c);
+  } else {
+    console.log('Done');
+    pc.close();
+    pc = null;
+  }
+}
+</script>

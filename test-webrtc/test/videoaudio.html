@@ -1,0 +1,53 @@
+﻿<html>
+  <body>
+    <div>
+     <video id="video" width="300" height="300" autoplay></video><br>
+      <button id="flip-button">切换</button>
+    </div>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+      <textarea   id="messagebox" style="width:80%;height:50%;">
+    </textarea>
+  <script>
+    var front = false;
+    var pc;
+    var messagebox = document.querySelector('#messagebox');
+      messagebox.value="";
+document.querySelector('#flip-button').onclick = function() { front = !front;videoA(); };
+   
+function videoA()
+    {
+      pc = new RTCPeerConnection(null);
+       console.log(pc);
+          // send any ice candidates to the other peer
+    pc.onicecandidate = function (evt) {
+        console.log ( JSON.stringify({ "candidate": evt.candidate }));
+    };
+
+    // once remote stream arrives, show it in the remote video element
+    pc.ontrack = function (evt) {
+        remoteView.src = URL.createObjectURL(evt.stream);
+    };
+    var constraints = { video: { facingMode: (front? "user" : "environment") } };
+      //var stream;
+var vv = navigator.mediaDevices.getUserMedia(constraints)
+vv.then(function (stream) {
+  video.src = URL.createObjectURL(stream);
+   pc.addStream(stream);
+  pc.createOffer(gotDescription, function (error) {console.log('Failure callback: ' + error); });
+       
+                          }).catch(e => console.log(e.name + ": "+ e.message));
+
+     
+  }
+    
+       function gotDescription(desc) {
+         console.log("ppp");
+            pc.setLocalDescription(desc);
+       
+            console.log(JSON.stringify({ "sdp": desc }));
+        }
+    
+    
+        </script>
+  </body>
+</html>

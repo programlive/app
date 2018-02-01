@@ -1,0 +1,189 @@
+<html>
+<body>
+   A: <br>
+  <div id="container"  style=";width:300px;">
+    <div id="buttons">
+    <button id="startButtonA">StartA</button>
+   <button id="readButton" >readsdpice</button>
+     
+    </div>
+     <div>
+  <video style="background:blue;width:300px;" id="myvideo" width="300" height="300" autoplay></video>
+  <video style="background:blue;width:300px;" id="remotevideo" width="300" height="300" autoplay></video>
+    </div>
+   
+
+  
+    
+  </div>
+
+  <div id="swap">
+        <h2>swap area</h2>
+    <textarea id="SwapArea"  style="height:500px;width:100%;"></textarea>
+      </div>
+    <script src="http://app.ruizhen.net/test-webrtc/adapter.js"></script>
+    <script src="http://app.ruizhen.net/test-webrtc/common.js"></script>
+    <script>
+      var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp1=new XMLHttpRequest();
+      xmlhttp2=new XMLHttpRequest();
+      xmlhttp3=new XMLHttpRequest();
+  }
+      var pc;
+
+var SwapArea = document.querySelector('textarea#SwapArea');
+var startButtonA = document.querySelector('button#startButtonA');
+var sendButton = document.querySelector('button#sendButton');
+
+startButtonA.onclick = createConnection;
+
+      var iceone=1;
+      var ajaxSend=1;
+      var display123;
+      var readButton = document.querySelector('button#readButton');
+      readButton.onclick = UPDATE;
+        // 仅仅用于控制哪一端的浏览器发起offer，#号后面有值的一方发起
+      //   var isCaller = window.location.href.split('#')[1];
+ var isCaller =1;
+        // 与信令服务器的WebSocket连接
+      // var socket = new WebSocket("ws://127.0.0.1:3000");
+        // stun和turn服务器
+        var iceServer = {
+            "iceServers": [{
+                "urls": "stun:stun.l.google.com:19302"
+            }, {
+                "urls": "turn:numb.viagenie.ca",
+                "username": "webrtc@live.com",
+                "credential": "muazkh"
+          }]
+       };
+    
+      
+      var constraints = { video: { facingMode:"user"},audio:true };
+     var va = navigator.mediaDevices.getUserMedia(constraints);
+  console.log('mediaDevices');
+      
+
+   
+      function createConnection()
+      {
+      // 创建PeerConnection实例 (参数为null则没有iceserver，即使没有stunserver和turnserver，仍可在局域网下通讯)
+        display123="";
+       pc = new RTCPeerConnection(null);
+
+        // 发送ICE候选到其他客户端
+        pc.onicecandidate = function(event){
+          if (event.candidate !== null && iceone == 1) {//iceone = 0;
+               display123 +=","+ JSON.stringify({"event": "of_ice_candidate", "data": { "candidate": event.candidate} });
+                  console.log("ice");
+  
+             SEND("ice",display123);
+            }
+        };
+        // 如果检测到媒体流连接到本地，将其绑定到一个video标签上输出
+        pc.ontrack  = function(event){
+        console.log(event);
+             remotevideo.src = URL.createObjectURL(event.streams[0]);
+        };
+       va.then(function (stream) {
+         console.log(stream);
+ myvideo.src = URL.createObjectURL(stream);
+pc.addStream(stream);
+}).catch(e => console.log(e.name + ": "+ e.message));
+           
+
+                  if(isCaller){
+              CLEAN();
+                pc.createOffer(sendOfferFn, function (error) {
+                    console.log('Failure callback: ' + error);
+                });
+            }
+     
+      
+  
+      }
+        // 发送offer和answer的函数，发送本地session描述
+        var sendOfferFn = function(desc){
+            pc.setLocalDescription(desc);
+            display123 += JSON.stringify({ "event": "_offer", "data": {"sdp": desc }});
+          console.log("offersdp");
+          SEND("offersdp",display123);
+        },
+        sendAnswerFn = function(desc){
+            pc.setLocalDescription(desc);
+            display123 += JSON.stringify({  "event": "_answer", "data": { "sdp": desc} });
+          console.log("answersdp");
+          SEND("answersdp",display123);
+        };
+  
+ 
+
+    
+      function onAddIceCandidateSuccess() {
+  trace('AddIceCandidate success.');
+        
+        // console.log('Send channel state is: ' + sendChannel.readyState);
+}
+
+function onAddIceCandidateError(error) {
+  trace('Failed to add Ice Candidate: ' + error.toString());
+}
+
+
+
+      function SEND(name,swap)
+{ 
+ 
+SwapArea.value="["+swap+"]";
+xmlhttp1.open("POST","http://app.ruizhen.net/test-webrtc/test.php",true);
+xmlhttp1.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp1.send("function=send&name="+name+"&message="+ encodeURIComponent(SwapArea.value));
+  //一定一定记得用这函数编码，js会把+&等符号理解为操作符，以空格替换
+}
+        function CLEAN()
+{ 
+SwapArea.innerHTML="";
+}
+      var iceread=0;
+      function UPDATE(){   
+             if(SwapArea.value){readsdpice();return;}
+ xmlhttp3.open("POST","http://app.ruizhen.net/test-webrtc/test.php",true);
+xmlhttp3.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp3.send("function=update");
+xmlhttp3.onreadystatechange=function()
+  { 
+    if (xmlhttp3.readyState==4 && xmlhttp3.status==200)
+    {
+      CLEAN();
+  SwapArea.value = decodeURIComponent(xmlhttp3.responseText);//对应解码函数
+       readsdpice();
+             } }
+  } 
+      function readsdpice()
+      {
+      var json = JSON.parse(SwapArea.value);
+    var i=0;
+      for(i in json){
+        var sdpice = json[i];
+      console.log(sdpice);
+            //如果是一个ICE的候选，则将其加入到PeerConnection中，否则设定对方的session描述为传递过来的描述
+        if( sdpice.event === "an_ice_candidate" && iceread ==1){//iceread =3;
+                                                                 console.log('onmessage: ',sdpice.event);
+                pc.addIceCandidate(new RTCIceCandidate(sdpice.data.candidate)).then(
+ onAddIceCandidateSuccess,
+      onAddIceCandidateError
+              );
+            } else if( sdpice.event === "_answer" && iceread ==0 ) {iceread=1;
+                                                                 console.log('onmessage: ',sdpice.event);
+                 pc.setRemoteDescription(new RTCSessionDescription(sdpice.data.sdp)); 
+           }else  if( sdpice.event === "_offer"){SwapArea.value = "";return;}
+         
+          }
+      }
+ 
+    
+    </script>
+</body>
+</html>

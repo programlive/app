@@ -1,0 +1,74 @@
+<html>
+<body onload="UPDATE()">
+
+<div id="container">
+  <h1>Chat Window</h1>
+  <div id="user-name"></div>
+  <div id="chat-box"><div id="chat-row"></div></div>
+  <form id="send-message-area">
+    <p>Your message: <button type="button"  id="sendButton" onclick="SEND()">发送数据</button></p>
+    <textarea id="posttext" maxlength="120"></textarea>
+  </form>
+  <div style="height:4%;margin: 0 0 0 2%; color:white" id="COUNT"></div>
+  </div>
+<script type="text/javascript">
+  var sendTEXT =  document.querySelector("#posttext");
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp1=new XMLHttpRequest();
+      xmlhttp2=new XMLHttpRequest();
+      xmlhttp3=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp1=new ActiveXObject("Microsoft.XMLHTTP");
+  xmlhttp2=new ActiveXObject("Microsoft.XMLHTTP");
+  xmlhttp3=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+// open popup prompt for ask name of user
+  //var name = prompt("输入昵称", "Guest");
+ var name = "coolcall";
+// default name is 'Guest'
+
+ 
+
+// display name on page
+document.querySelector("#user-name").innerHTML="User: <strong>" + name + "</strong>";
+  
+  
+  function SEND()
+{ 
+xmlhttp2.open("POST","http://app.ruizhen.net/chat/test.php",true);
+xmlhttp2.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  xmlhttp2.send("function=send&nickname="+encodeURI(encodeURI(name))+"&message="+encodeURI(encodeURI(sendTEXT.value))+"");
+ sendTEXT.value="";
+xmlhttp2.onreadystatechange=function()
+  {
+ 
+  }
+ UPDATE();
+}
+    function UPDATE()
+{
+xmlhttp3.open("POST","http://app.ruizhen.net/chat/test.php",true);
+xmlhttp3.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp3.send("function=update");
+xmlhttp3.onreadystatechange=function()
+  { 
+    if (xmlhttp3.readyState==4 && xmlhttp3.status==200)
+    {
+      document.querySelector("#chat-row").innerHTML=xmlhttp3.responseText; 
+         var data = JSON.parse(xmlhttp3.responseText);
+      console.log(data[0]);
+      document.querySelector("#chat-row").innerHTML="";
+        if(data[0]){  
+        document.querySelector("#chat-row").innerHTML+="<div id='TEXT'>       "+ JSON.parse(data[0]).candidate  +"    </div>";  
+  }
+    }
+  }
+} 
+
+</script>
+</body>
+</html>

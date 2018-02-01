@@ -1,0 +1,30 @@
+﻿ <!DOCTYPE html>    
+    <html>    
+    <head>    
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">    
+<script src="../TJscript.js"></script>
+    </head>  
+      <body style="background:white">  
+      <p id="title" style="background:black;color:white">
+      水印:<input type="file" name="imgOne" id="imgOne" style="width:200px;" onchange="OneImg(this.id);"/>  
+      原图:<input type="file" name="imgTow" id="imgTow" onchange="document.getElementById('path').innerHTML=this.value;TowImg(this.id);"/>  
+          <button id="saveImageBtn" onClick="saveImageInfo(this.id);">生成图片</button>  
+      X坐标：<input type="text" name="screenX" id="screenX" style="width:35px;" value="0" onchange="checkField(this.value)"/>
+      Y坐标：<input type="text" name="screenY" id="screenY" style="width:35px;" value="0" onchange="checkField(this.value)"/>
+        wsad方向移动键
+        
+
+        
+        </p>
+        
+      <canvas id="myCanvas" style="display: block;">抱歉，您的浏览器还不支持canvas。</canvas> 
+<p id="path"  style="text-align:center"></p>
+    </body>  
+    <footer>
+  <p>HTML5 WebApp: <a href="http://app.ruizhen.net/" target="_blank">http://app.ruizhen.net</a>
+        &nbsp;&nbsp;<a href="http://app.ruizhen.net/watermark/multiwatermark/" target="_self">去批量处理图片</a>
+      </p>
+</footer>
+  
+  <script src="script.js"></script>
+    </html>  

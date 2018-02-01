@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body style="background:white">
+
+<script>
+  
+ AudioContext = window.AudioContext||window.webkitAudioContext;
+ var ctx = new AudioContext();
+  
+this.sampleurl={
+    'rhythm.wav':'http://g200kg.github.io/WebAudioDesigner/samples/rhythm.wav',
+  };
+
+      req=new XMLHttpRequest();
+      req.open('GET',this.sampleurl['rhythm.wav'],true);
+      req.responseType='arraybuffer';
+ req.onload=function(){
+        if(req.response){
+          ctx.decodeAudioData(req.response,
+            function(b){ 
+     var buf1 = ctx.createBufferSource();
+    buf1.buffer = b;console.log(b);
+    buf1.connect(ctx.destination);
+ buf1.start(0);
+            },
+                              function(e){ console.log(e);} );
+        }
+      }
+     
+ try{req.send();} catch(e){}
+
+
+ 
+</script>
+</body>
+</html>

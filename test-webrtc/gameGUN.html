@@ -1,0 +1,298 @@
+<html>
+<body>
+   A: <br>
+        <div id="receive">
+          Receive :<textarea id="dataChannelReceive" disabled></textarea>
+      </div>
+  <div id="container">
+        <div class="canvaspr" id="one">
+    <canvas id="myCanvas" width="600" height="600" style="position:absolute;z-index:1;"></canvas>
+
+    <canvas id="myCanvas1"  width="600" height="600" style="position:relative;background:#125500;z-index:0;" ></canvas>
+    </div>
+    <div id="buttons">
+    <button id="startButtonA">StartA</button>
+      <button id="readButton" style="display:none">readsdpice</button>
+      <button id="sendButton" disabled>Send</button>
+      <button id="closeButton" disabled>Stop</button>
+      <text id="waitTIME"> </text>
+    </div>
+    <div id="sendReceive">
+      <div id="send">
+        <h2>Send</h2>
+        <textarea id="dataChannelSend"  placeholder="Press Start, enter some text, then press Send." disabled></textarea>
+      </div>
+
+    </div>
+  </div>
+  <div id="swap">
+       <h2>swap area</h2>
+    <textarea id="SwapArea"  style="height:500px;width:100%;"></textarea>
+      </div>
+    <script src="http://app.ruizhen.net/test-webrtc/adapter.js"></script>
+    <script src="http://app.ruizhen.net/test-webrtc/common.js"></script>
+    <script>
+     var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp1=new XMLHttpRequest();
+      xmlhttp2=new XMLHttpRequest();
+      xmlhttp3=new XMLHttpRequest();
+  }
+      var countGOAL=0; //连接等待时间
+      var pc;
+      var obj; //定时查询服务器信令数据
+      var sendChannel;
+var dataChannelSend = document.querySelector('textarea#dataChannelSend');
+var dataChannelReceive = document.querySelector('textarea#dataChannelReceive');
+var SwapArea = document.querySelector('textarea#SwapArea');
+var startButtonA = document.querySelector('button#startButtonA');
+var sendButton = document.querySelector('button#sendButton');
+var closeButton = document.querySelector('button#closeButton');
+startButtonA.onclick = createConnection;
+sendButton.onclick = sendData;
+closeButton.onclick = closeDataChannels;
+      var iceone=1;
+      var ajaxSend=1;
+      var display123;
+      var readButton = document.querySelector('button#readButton');
+      readButton.onclick = UPDATE;
+var waitTIME = document.querySelector('text#waitTIME');
+       // stun和turn服务器
+        var iceServer = {
+            "iceServers": [{
+                "urls": "stun:stun.counterpath.com"
+            }, {
+                "urls": "turn:numb.viagenie.ca",
+                "username": "webrtc@live.com",
+                "credential": "muazkh"
+          }]
+       };
+      function createConnection()
+      {
+      // 创建PeerConnection实例 (参数为null则没有iceserver，即使没有stunserver和turnserver，仍可在局域网下通讯)
+        display123="";
+       pc = new RTCPeerConnection(null);
+        // 发送ICE候选到其他客户端
+        pc.onicecandidate = function(event){
+          if (event.candidate) {
+               display123 +=","+ JSON.stringify({"event": "of_ice_candidate", "data": { "candidate": event.candidate} });
+                  console.log("ice");
+          }else{
+           console.log("done");
+             SEND("ice",display123);
+           obj =setInterval(UPDATE,1000);  //设置定时查询服务器信令数据
+          }
+        };
+           sendChannel = pc.createDataChannel('sendDataChannel',null);
+  console.log('Created send data channel');
+  CLEAN();
+ pc.createOffer(sendOfferFn, function (error) {console.log('Failure callback: ' + error); });
+pc.ondatachannel = receiveChannelCallback;
+  sendChannel.onopen = onSendChannelStateChange;
+  sendChannel.onclose = onSendChannelStateChange;
+
+      }
+        // 发送offer本地session描述
+        var sendOfferFn = function(desc){
+            pc.setLocalDescription(desc);
+            display123 += JSON.stringify({ "event": "_offer", "data": {"sdp": desc }});
+          console.log("offersdp");
+        };
+ 
+ 
+      
+      function onSendChannelStateChange() {
+  var readyState = sendChannel.readyState;
+  trace('Send channel state is: ' + readyState);
+  if (readyState === 'open') {
+  
+    dataChannelSend.disabled = false;
+    // dataChannelReceive.disabled = false;
+    dataChannelSend.focus();
+    sendButton.disabled = false;
+    closeButton.disabled = false;
+  } else {
+    dataChannelSend.disabled = true;
+    sendButton.disabled = true;
+    createConnection();//当B机关闭后A机自动重置继续监听
+  }
+}
+
+    
+      function onAddIceCandidateSuccess() {
+  trace('AddIceCandidate success.');
+         clearInterval(obj); //关闭定时查询服务器信令数据
+        // console.log('Send channel state is: ' + sendChannel.readyState);
+}
+
+function onAddIceCandidateError(error) {
+  trace('Failed to add Ice Candidate: ' + error.toString());
+}
+      function sendData() {
+  var data = dataChannelSend.value;
+  sendChannel.send(data);
+  trace('Sent Data: ' + data);
+}
+function receiveChannelCallback(event) {
+  trace('Receive Channel Callback');
+  receiveChannel = event.channel;
+  receiveChannel.onmessage = onReceiveMessageCallback;
+  receiveChannel.onopen = onReceiveChannelStateChange;
+  receiveChannel.onclose = onReceiveChannelStateChange;
+}
+     var XYarray,xxx=0,xxxx=0,xxxxx=0;
+      var yyy=0,yyyy=0,yyyyy=0;
+     function onReceiveMessageCallback(event) {
+       // trace('Received Message');
+          if(event.data == 'L') //发射按钮按下
+       {
+     
+       }else if(event.data == 's') //发射按钮按下
+       {
+         shoot(xxxxx,yyyyy) //背景画布显示弹孔
+         trace('Received Message');
+       } else{
+        XYarray = event.data.split(" ");
+         //X坐标根据手机指向x=0方位定出31值(可惜陀螺仪会因为
+         //机械运动、温度等原因造成漂移，需要加速度和卡曼滤
+         //当前技术原因，暂且搁置该方法。
+     // XYarray[0] =   (31 - parseFloat(XYarray[0]))*20;
+         // XYarray[1] =   (10 - parseFloat(XYarray[1]))*40;
+      xxxxx =   parseFloat(XYarray[0]);
+       yyyyy =   parseFloat(XYarray[1]);
+         dataChannelReceive.value = xxxxx +"\r\n"+yyyyy+"\r\n"+ XYarray[1]+"\r\n"+XYarray[0];
+        show_coords(xxxxx,yyyyy);  
+      
+       }
+}
+      function onReceiveChannelStateChange() {
+  var readyState = receiveChannel.readyState;
+  trace('Receive channel state is: ' + readyState);
+}
+function closeDataChannels() {
+  trace('Closing data channels');
+  sendChannel.close();
+  trace('Closed data channel with label: ' + sendChannel.label);
+  receiveChannel.close();
+  trace('Closed data channel with label: ' + receiveChannel.label);
+  pc.close();
+  localConnection = null;
+  pc = null;
+  trace('Closed peer connections');
+  startButtonA.disabled = false;
+  sendButton.disabled = true;
+  closeButton.disabled = true;
+  dataChannelSend.value = '';
+  dataChannelReceive.value = '';
+  dataChannelSend.disabled = true;
+  disableSendButton();
+  enableStartButton();
+  
+  
+}
+   
+function enableStartButton() {
+  startButtonA.disabled = false;
+}
+function disableSendButton() {
+  sendButton.disabled = true;
+}
+      function SEND(name,swap)
+{ 
+ 
+SwapArea.value="["+swap+"]";
+xmlhttp1.open("POST","http://app.ruizhen.net/test-webrtc/test.php",true);
+xmlhttp1.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp1.send("function=send&name="+name+"&message="+ encodeURIComponent(SwapArea.value));
+  //一定一定记得用这函数编码，js会把+&等符号理解为操作符，以空格替换
+}
+        function CLEAN()
+{ 
+SwapArea.innerHTML="";
+}
+      function UPDATE(){   
+             if(SwapArea.value){readsdpice();return;}
+ xmlhttp3.open("POST","http://app.ruizhen.net/test-webrtc/test.php",true);
+xmlhttp3.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp3.send("function=update");
+xmlhttp3.onreadystatechange=function()
+  { 
+    if (xmlhttp3.readyState==4 && xmlhttp3.status==200)
+    {
+ 
+      CLEAN();
+  SwapArea.value = decodeURIComponent(xmlhttp3.responseText);//对应解码函数
+       readsdpice();
+            } }
+  } 
+      function readsdpice()
+      {
+      var json = JSON.parse(SwapArea.value);
+    var i=0;
+      for(i in json){
+        var sdpice = json[i];
+      waitTIME.innerHTML=countGOAL++; //连接等待时间显示
+            //如果是一个ICE的候选，则将其加入到PeerConnection中，否则设定对方的session描述为传递过来的描述
+        if( sdpice.event === "an_ice_candidate"){
+                                                                 console.log('onmessage: ',sdpice.event);
+                pc.addIceCandidate(new RTCIceCandidate(sdpice.data.candidate)).then(
+ onAddIceCandidateSuccess,
+      onAddIceCandidateError
+              );
+            } else if( sdpice.event === "_answer") {
+                                                                 console.log('onmessage: ',sdpice.event);
+                 pc.setRemoteDescription(new RTCSessionDescription(sdpice.data.sdp)); 
+           }else  if( sdpice.event === "_offer"){SwapArea.value = "";return;}
+         
+          }
+      }
+      
+      
+      
+      
+      
+ //----------------------------------------------------射击画布------------------------
+      
+var xGoal=0,yGoal=0;
+var c=document.getElementById("myCanvas");
+var cxt=c.getContext("2d");
+var c1=document.getElementById("myCanvas1");
+var cxt1=c1.getContext("2d");
+ 
+  function shoot(x,y) //背景画布显示弹孔
+  {
+   
+cxt1.fillStyle="#ff0000";
+cxt1.beginPath();
+cxt1.arc(x+11,y+16,5,0,Math.PI*2,true);
+cxt1.closePath();
+cxt1.fill();
+ console.log(x +":"+ y);
+  }
+  
+  function show_coords(x,y)//使用鼠标移动事件触发该函数
+  { 
+    reticle(x,y);
+    xGoal = x;
+    yGoal = y;
+ 
+  }
+function reticle(x,y)//画准星函数
+  {
+    cxt.clearRect(xGoal, yGoal,30,30); //delete 原来上次准星位置的图案
+ cxt.beginPath();//开始路径
+cxt.moveTo(10+x,10+y);
+cxt.lineTo(10+x,20+y);
+cxt.moveTo(5+x,15+y);
+cxt.lineTo(15+x,15+y);
+   cxt.stroke();//开始绘制线条
+    cxt.closePath();//要删除线条必须关闭路径
+  }
+
+    
+      
+  //--------------------------------------------射击画布----------------------------------
+    </script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<link rel="shortcut icon" href="http://www.zaole.net/bitbug_favicon.ico">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>CSS3-html5在线测试</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
+<meta name="Keywords" content="html5,css3,CSS3,css3 transition,css,CSS3在线,html5在线,CSS3 Demo,html5 Demo,CSS3手机,html5手机,
+animation,canvas,responsive,3d,physics,menu,slider,transform,pure css,svg,button,typography,loading,dribbble,nav,loader">
+<meta name="description" content="CSS3-html5在线测试">
+<meta name="language" content="zh-cn">
+<meta name="application-name" content="CSS3-html5在线测试">
+<meta name="msapplication-tooltip" content="CSS3-html5在线测试">  
+<meta name="Copyright" content="Copyright zaole.net All Rights Reserved.">  
+<script src="CSS3-html5_files/codemirror.js" type="text/javascript"></script>
+<script src="CSS3-html5_files/xml.js" type="text/javascript"></script>
+<script src="CSS3-html5_files/javascript.js" type="text/javascript"></script>
+<script src="CSS3-html5_files/css.js" type="text/javascript"></script>
+<script src="CSS3-html5_files/htmlmixed.js" type="text/javascript"></script>
+<script src="CSS3-html5_files/active-line.js" type="text/javascript"></script>
+<script type="text/javascript" src="CSS3-html5_files/touchScroll.htm"></script>
+<link rel="stylesheet" href="CSS3-html5_files/codemirror.css">
+<link rel="stylesheet" href="CSS3-html5_files/docs.css">
+<link rel="stylesheet" href="CSS3-html5_files/style.css">
+<!--Left_menu-->
+<link rel="stylesheet" href="CSS3-html5_files/bootstrap.css">
+<!--Left_menu End-->
+<script type="text/javascript" src="CSS3-html5_files/jquery-1.js"></script>
+<style>
+.wrap{ width:100%; overflow:hidden;position:absolute;}
+.wrap .top,.wrap .middle,.wrap .bottom{ width:100%; height:30%; overflow:auto; }
+.wrap .bottom{ height:40%; background:#1c1c1c }
+.bottom_wrap{ width:100%;height:70%;overflow:hidden;}
+.v_drag{ width:100%;background-color:#1c1c1c;overflow:hidden; padding:10px 0;}
+.v_drag .tip{ width:100px;height:100%;margin:0 auto; }
+.v_drag .line{ width:80px;height:1px;margin:1px auto;background-color:#333; }
+.h_drag{ width:11px;height:100%;line-height:100%;background-color:#212324;overflow:hidden;position:relative;float:left;}
+.h_drag .tip{ width:11px;height:20px;display:inline;position:absolute;top:40%;}
+.h_drag .line{ width:1px;height:80px;margin-left:1px;background-color:#333;float:left; }
+.wrap2 .top,.wrap .left{ overflow:hidden;}
+.wrap2 .bottom{ _overflow:hidden; }
+.wrap .left,.wrap .right,.top .top_left,.top .top_right{ float:left;width:50%; height:100%; }
+.wrap .right,.left .left_top,.left .left_bottom,.top .top_left,.top .top_right{ overflow:auto;}
+/*baidu*/
+a,img{border:0; text-decoration:none; color:#444;}
+#mintbar{top:164px;left:50px;z-index:2000;width:200px;text-align:center;height:200px;position:absolute; display:inline; background:#fff}
+#closebtn{ padding:0 2px; position:fixed; left:50px; top:150px;font-size:12px; color:#fff;}
+#mint{cursor:pointer;z-index:1000;}
+.tips{width:200px; padding:10px 0; position:absolute; top:200px; color:#999; background:#ddd; left:0}
+.tips dl dt{ width:100%; float:left; line-height:30px;}
+.tips dl dd{ float:left; line-height:30px; padding-left:8%; text-align:left; width:42%;}
+.left{ float:left; color:#fff}
+.right{ float:right; text-align:right; }
+.right a{color:#f8304b;}
+.money a{ color:red }
+.sp{ float:left; width:100%; margin-bottom:20px;}
+body{ color:#444}
+</style>
+ <style class="firebugResetStyles" type="text/css" charset="utf-8">/* See license.txt for terms of usage */
+/** reset styling **/
+.firebugResetStyles {
+    z-index: 2147483646 !important;
+    top: 0 !important;
+    left: 0 !important;
+    display: block !important;
+    border: 0 none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    outline: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    position: fixed !important;
+    transform: rotate(0deg) !important;
+    transform-origin: 50% 50% !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: transparent none !important;
+    pointer-events: none !important;
+    white-space: normal !important;
+}
+style.firebugResetStyles {
+    display: none !important;
+}
+
+.firebugBlockBackgroundColor {
+    background-color: transparent !important;
+}
+
+.firebugResetStyles:before, .firebugResetStyles:after {
+    content: "" !important;
+}
+/**actual styling to be modified by firebug theme**/
+.firebugCanvas {
+    display: none !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.firebugLayoutBox {
+    width: auto !important;
+    position: static !important;
+}
+
+.firebugLayoutBoxOffset {
+    opacity: 0.8 !important;
+    position: fixed !important;
+}
+
+.firebugLayoutLine {
+    opacity: 0.4 !important;
+    background-color: #000000 !important;
+}
+
+.firebugLayoutLineLeft, .firebugLayoutLineRight {
+    width: 1px !important;
+    height: 100% !important;
+}
+
+.firebugLayoutLineTop, .firebugLayoutLineBottom {
+    width: 100% !important;
+    height: 1px !important;
+}
+
+.firebugLayoutLineTop {
+    margin-top: -1px !important;
+    border-top: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineRight {
+    border-right: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineBottom {
+    border-bottom: 1px solid #999999 !important;
+}
+
+.firebugLayoutLineLeft {
+    margin-left: -1px !important;
+    border-left: 1px solid #999999 !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.firebugLayoutBoxParent {
+    border-top: 0 none !important;
+    border-right: 1px dashed #E00 !important;
+    border-bottom: 1px dashed #E00 !important;
+    border-left: 0 none !important;
+    position: fixed !important;
+    width: auto !important;
+}
+
+.firebugRuler{
+    position: absolute !important;
+}
+
+
+
+.overflowRulerX > .firebugRulerV {
+    left: 0 !important;
+}
+
+.overflowRulerY > .firebugRulerH {
+    top: 0 !important;
+}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+.fbProxyElement {
+    position: fixed !important;
+    pointer-events: auto !important;
+}
+</style>
+<script src="../TJscript.js"></script>
+</head>
+
+
+<div style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;" id="BAIDU_DUP_fp_wrapper"><iframe style="width: 0px; height: 0px; visibility: hidden; display: none;" src="http://pos.baidu.com/wh/o.htm?ltr=&amp;cf=u" id="BAIDU_DUP_fp_iframe"></iframe></div><div style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;" id="BAIDU_DUP_fp_wrapper"><iframe style="width: 0px; height: 0px; visibility: hidden; display: none;" src="CSS3-html5_files/o.htm" id="BAIDU_DUP_fp_iframe"></iframe></div><div style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;" id="BAIDU_DUP_fp_wrapper"><iframe style="width: 0px; height: 0px; visibility: hidden; display: none;" src="CSS3-html5_files/o_002.htm" id="BAIDU_DUP_fp_iframe"></iframe></div>
+ <form>
+<div class="abc">css3 
+transition,前端开发,前端设计,web前端,WEB前端,CSS3效果,CSS3特效,CSS3 demo,html5 
+demo,CSS3,html5效果,html5特效,CSS3测试,html5测试,html5 css3在线演示, html5, css3, 
+html5 教程,css, jquery, javascript, div+css模板, css模板, css教程, div css, css 
+hack, JS, html5 开发工具, html5, css3, css3 圆角, css3教程, css3手册, css3 动画 , 
+css3 渐变, css3 阴影, css3 transform, css3 旋转, html5 canvas, html5 video, 
+html5 3d, android html5, html5测试</div> 
+    <header id="header" class="container-fluid">
+        <div class="row">
+            <div style="margin:0 auto; width:90%;"><h1>&lt;&nbsp;&nbsp;<sup>……</sup>&nbsp;&nbsp;/&gt;</h1><h3>CSS3Html5在线测试</h3>Copy rights © zaole.net 京ICP备12001734号</div>
+        </div>
+    </header>		
+    <section id="container" class="container-fluid">
+        <div id="menu-btn" class="col-md-2 col-xs-2 col-sm-2" style="padding:0; margin-right:12px">
+            <a href="javascript:;" id="open-icon-menu">
+            <span class="whiter-border"></span>
+            <span class="whiter-border"></span>
+            <span class="whiter-border"></span>
+            </a>
+        </div>
+     
+<div style="width: 1280px; height: 531px;" class="wrap wrap2">
+        <div style="height: 96%;" class="top">
+            <div style="overflow-y: hidden; width: 252px;" class="top_left">
+                <textarea style="display: none;" id="code" name="code" cols="" rows=""></textarea><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 4.5px; left: 28px;"><textarea tabindex="0" autocapitalize="off" autocorrect="off" style="position: absolute; padding: 0px; width: 1px; height: 1em; outline: medium none; font-size: 4px;" wrap="off"></textarea></div><div style="left: 24px;" class="CodeMirror-hscrollbar"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar"><div style="width: 1px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div draggable="true" tabindex="-1" class="CodeMirror-scroll"><div style="position: relative; min-height: 100%;"><div style="margin-left: 24px; min-height: 26px;" class="CodeMirror-sizer"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: medium none;"><div class="CodeMirror-measure"><pre><span>&nbsp;</span></pre></div><div style="position: relative; z-index: 1; display: none;"></div><div style=""><div style="position: relative;" class="CodeMirror-activeline"><div style="position: absolute; left: -24px;"><div style="left: 0px; width: 7px;" class="CodeMirror-linenumber CodeMirror-gutter-elt">1</div></div><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><pre>&nbsp;</pre></div></div><div style="left: 4px; top: 0.5px; height: 17px;" class="CodeMirror-cursor">&nbsp;</div><div style="display: none;" class="CodeMirror-cursor CodeMirror-secondarycursor">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px; top: 26px;"></div><div class="CodeMirror-gutters"><div style="width: 24px;" class="CodeMirror-gutter CodeMirror-linenumbers"></div></div></div></div></div><div class="CodeMirror cm-s-default CodeMirror-wrap"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 4.5px; left: 28px;"><textarea tabindex="0" autocapitalize="off" autocorrect="off" style="position: absolute; padding: 0px; width: 1px; height: 1em; outline: medium none; font-size: 4px;" wrap="off"></textarea></div><div style="left: 24px;" class="CodeMirror-hscrollbar"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar"><div style="width: 1px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div draggable="true" tabindex="-1" class="CodeMirror-scroll"><div style="position: relative; min-height: 100%;"><div style="margin-left: 24px; min-height: 26px;" class="CodeMirror-sizer"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines"><div style="position: relative; outline: medium none;"><div class="CodeMirror-measure"><pre><span>&nbsp;</span></pre></div><div style="position: relative; z-index: 1; display: none;"></div><div style=""><div style="position: relative;" class="CodeMirror-activeline"><div style="position: absolute; left: -24px;"><div style="left: 0px; width: 7px;" class="CodeMirror-linenumber CodeMirror-gutter-elt">1</div></div><div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><pre>&nbsp;</pre></div></div><div style="left: 4px; top: 0.5px; height: 17px; visibility: hidden;" class="CodeMirror-cursor">&nbsp;</div><div style="display: none; visibility: hidden;" class="CodeMirror-cursor CodeMirror-secondarycursor">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px; top: 26px;"></div><div class="CodeMirror-gutters"><div style="width: 24px;" class="CodeMirror-gutter CodeMirror-linenumbers"></div></div></div></div></div><div class="CodeMirror cm-s-default CodeMirror-wrap CodeMirror-focused">
+<div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 4.5px; left: 28px;">
+<textarea tabindex="0" autocapitalize="off" autocorrect="off" style="position: absolute; padding: 0px; width: 1px; height: 1em; outline: medium none; font-size: 4px;" wrap="off"></textarea></div>
+<div style="left: 24px;" class="CodeMirror-hscrollbar">
+<div style="height: 1px;"></div></div><div style="bottom: 0px;" class="CodeMirror-vscrollbar">
+<div style="width: 1px; height: 3692px;"></div></div>
+<div class="CodeMirror-scrollbar-filler"></div>
+<div draggable="true" tabindex="-1" class="CodeMirror-scroll">
+<div style="position: relative; min-height: 100%;">
+<div style="margin-left: 24px; min-height: 26px;" class="CodeMirror-sizer">
+<div style="position: relative; top: 0px;">
+<div class="CodeMirror-lines">
+<div style="position: relative; outline: medium none;">
+<div class="CodeMirror-measure"><pre><span>&nbsp;</span></pre></div>
+<div style="position: relative; z-index: 1; display: none;">
+<div style="position: absolute; left: 4px; top: 1062.5px; width: 55px; height: 17px;" class="CodeMirror-selected"></div>
+<div style="position: absolute; left: 4px; top: 0px; width: 724px; height: 1062.5px;" class="CodeMirror-selected"></div></div>
+<div style=""><div style="position: relative;" class="CodeMirror-activeline">
+<div style="position: absolute; left: -24px;"><div style="left: 0px; width: 7px;" class="CodeMirror-linenumber CodeMirror-gutter-elt">1</div></div>
+<div class="CodeMirror-activeline-background CodeMirror-linebackground"></div><pre>&nbsp;</pre></div></div>
+<div style="left: 4px; top: 0.5px; height: 17px; visibility: hidden;" class="CodeMirror-cursor">&nbsp;</div>
+<div style="display: none; visibility: hidden;" class="CodeMirror-cursor CodeMirror-secondarycursor">&nbsp;</div></div></div></div></div>
+<div style="position: absolute; height: 30px; width: 1px; top: 26px;"></div>
+<div class="CodeMirror-gutters"><div style="width: 24px;" class="CodeMirror-gutter CodeMirror-linenumbers"></div></div></div></div></div>
+            </div>
+            <div style="cursor: e-resize;" class="h_drag" id="h_drag">
+                <div class="tip"><div class="line"></div><div class="line"></div><div class="line"></div></div>
+            </div>
+            <div style="width: 1017px;" class="top_right">
+                    <iframe id="preview" style="background:#fff"></iframe>
+                    <script type="text/javascript">
+                    var delay;
+                    // Initialize CodeMirror editor with a nice html5 canvas demo.
+                    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+                    lineNumbers: true,
+                    lineWrapping: true,
+                    mode: 'text/html',
+                    styleActiveLine: true,
+                    tabMode: 'indent'
+                    });
+                    editor.on("change", function() {
+                    clearTimeout(delay);
+                    delay = setTimeout(updatePreview, 300);
+                    });
+                    
+                    function updatePreview() {
+                    var previewFrame = document.getElementById('preview');
+                    var preview =  previewFrame.contentDocument ||  previewFrame.contentWindow.document;
+                    preview.open();
+                    preview.write(editor.getValue());
+                    preview.close();
+                    }
+                    setTimeout(updatePreview, 300);
+                    </script>
+            </div>
+        </div>
+        
+      <div class="no_drag" style="background-color: #1c1c1c;overflow: hidden;padding: 8px 0;width: 100%; height: 4%;">
+            
+  <p>HTML5 WebApp: <a target="_blank" href="http://app.ruizhen.net/">http://app.ruizhen.net/</a></p>
+        </div>
+            
+        </div></div>
+    
+      </section>
+
+  </form>  
+<script type="text/javascript" src="CSS3-html5_files/jquery.js"></script>
+<script type="text/javascript" src="CSS3-html5_files/custompage.js"></script>
+<script type="text/javascript">
+			$(function () {
+				var $vDrag = $(".v_drag");
+				var $hDrag = $(".top .h_drag");
+				var v_options=$.cookie("v_drag")?unserizalize($.cookie("v_drag")):{ minHeight: 0, vDrag: 1 , prevHeightRate:0.9  };
+				var h_options=$.cookie("h_drag")?unserizalize($.cookie("h_drag")):{ minHeight: 0, hDrag: 1 , prevWidthRate:0.5 , hiddenSize: 10};
+				
+				$vDrag.custompage(v_options);
+				$hDrag.custompage(h_options);
+
+				$(window).resize(function(){
+					$vDrag.custompage("reset");
+					$hDrag.custompage("reset");
+				});
+				$(window).bind("unload",function(){
+					$vDrag.custompage("saveCookie");
+					$hDrag.custompage("saveCookie");
+				});
+			
+			
+			        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+
+        var id = getQueryString("articleid");
+        if (id) {
+            $(".content a[href$='articleid=" + id + "']").css({ "color": "yellow" });
+        }
+		
+		
+		    function anim(duration){
+        $('#mint').animate(
+            {height: 'toggle'},
+            {duration: duration}
+        );
+    }
+
+    $('#closebtn').click(function() {
+        $('#mintbar').slideUp();
+        anim(100);
+    });
+
+    $('#mint').click(function() {
+        anim(100);
+        $('#mintbar').slideDown('slow');
+    });
+
+
+    });
+
+</script>
+<!--Left_menu-->  
+<script>
+	$(function(){
+		var nav=function(id){
+			var oBtn=document.querySelector(id);
+			oBtn.onclick=function(ev){
+				var ev = ev || window.event;
+				var str=document.body.className;
+				if(/open+/g.test(str)==true){
+					document.body.className = " ";	
+				}else {
+					document.body.className="open";	
+				}
+				ev.cancelBubble = true;
+				ev.preventDefault();
+			}
+
+		}("#open-icon-menu");
+	})
+</script>
+<!--Left_menu End-->     
+
+<div id="mint" style="padding: 0px 2px; color: rgb(255, 255, 255); position: absolute; right: 0px; top: 4px; text-align: center;">+</div>
+
+
+<div style="width: 100%; height: 100%; position: absolute; z-index: 9999; opacity: 0; left: 0px; top: 0px; background-color: red; display: none;" class="dialog_floor"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

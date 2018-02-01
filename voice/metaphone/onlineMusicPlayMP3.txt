@@ -1,0 +1,26 @@
+<script>
+
+window.AudioContext = (window.AudioContext || window.webkitAudioContext);
+if(window.AudioContext) {
+    var context = new window.AudioContext();
+} else {
+    console.log('not support web audio api');
+}
+ 
+var audioURl = 'http://g200kg.github.io/WebAudioDesigner/samples/kerokeroshiyouyo.mp3'; // 这里替换为音频文件URL
+var xhr = new XMLHttpRequest();
+xhr.open('GET', audioURl, true);
+xhr.responseType = "arraybuffer"; // XMLHttpRequest 2的新东西
+xhr.onload = function() {
+    // 音频数据在request.response中，而不是request.requestText
+  context.decodeAudioData(xhr.response,function (buffer){        
+    source = context.createBufferSource();
+        source.buffer = buffer;
+        source.connect(context.destination);
+    source.start(0);},function onError(e){console.log(e);});
+}
+xhr.send();
+
+
+
+</script>

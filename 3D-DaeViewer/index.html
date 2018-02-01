@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - collada</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+<meta name="description"
+content="3D-dae模型在线查看器。使用方法：按住鼠标左键旋转模型;按住鼠标右键平移模型；滚轮缩小放大。推荐用草图大师(sketchup)导出dae文件后查看，不可加载有图片材质的模型。">
+
+<meta name="keywords"
+content="3D查看器, dae查看器,草图大师, sketchup, dae文件, 3D模型">
+
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				color: #fff;
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				text-align: center;
+				z-index: 100;
+				display:block;
+
+			}
+
+			a { color: skyblue }
+		</style>
+<script src="../TJscript.js"></script>
+	</head>
+
+  <body>
+    <div  style="margin: 0px; width:100%;color: white;" >
+    <input type = "file" id = "file"  onchange="readAsText(this.id)"/>
+      <input type="text" id="myNumber" style="width:50px"/>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HTML5 WebApp: <a target="_blank" href="http://app.ruizhen.net/">http://app.ruizhen.net/</a> 
+</div>
+
+		<div id="info"></div>
+		<script src="three.min.js"></script>
+		<script src="ColladaLoader2.js"></script>
+      <script src="OrbitControls.js"></script>
+		<script>
+
+var result;
+  var file;
+  var collada;
+ var pointLight;
+  var directionalLight;
+if(typeof FileReader == 'undefined'){ 
+    document.getElementById('uptime').innerHTML = "你的浏览器不支持 FileReader"; 
+} 
+function readAsText(fp){ 
+  
+    var reader = new FileReader();
+    var file = document.getElementById(fp).files[0];
+  
+  reader.addEventListener( 'load', function ( event ) {  //加载dae文件完毕后事件响应
+    var size = '(' + Math.floor( event.total / 1000 ) + ' KB)';
+    var progress = Math.floor( ( event.loaded / event.total ) * 100 ) + '%';
+	console.log( 'Loading', file.name, size, progress );
+    
+var contents = event.target.result;
+var loader = new THREE.ColladaLoader();
+collada = loader.parse( contents );
+collada.scene.name = file.name;
+    //alert(collada.scene.scale.x  +":" + collada.scene.scale.y +":" + collada.scene.scale.z);
+ document.getElementById('myNumber').value=collada.scene.scale.z;
+ init();
+   animate();
+  }, false );
+  
+     reader.readAsText(file); 
+   
+} 
+          function init() {
+
+				container = document.createElement( 'div' );
+				document.body.appendChild( container );
+				camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 1, 2000 );
+				camera.position.set( collada.scene.scale.x*1000, collada.scene.scale.y*1000, collada.scene.scale.z*1000 );
+       var controls = new THREE.OrbitControls( camera );
+				scene = new THREE.Scene();
+
+				// Grid
+
+				var size = 50, step = 1;
+				var geometry = new THREE.Geometry();
+				var material = new THREE.LineBasicMaterial( { color: 0x303030 } );
+				for ( var i = - size; i <= size; i += step ) {
+					geometry.vertices.push( new THREE.Vector3( - size, - 0.04, i ) );
+					geometry.vertices.push( new THREE.Vector3(   size, - 0.04, i ) );
+					geometry.vertices.push( new THREE.Vector3( i, - 0.04, - size ) );
+					geometry.vertices.push( new THREE.Vector3( i, - 0.04,   size ) );
+				}
+				var line = new THREE.LineSegments( geometry, material );
+              scene.add( line );
+
+				// Add the COLLADA
+       
+          
+	scene.add(collada.scene);
+
+				// Lights
+
+            scene.add( new THREE.AmbientLight( 0xffffff,0.6) );
+
+				directionalLight = new THREE.DirectionalLight(/*Math.random() * 0xffffff*/0xeeeeee );
+				directionalLight.position.x = -10;
+				directionalLight.position.y = -10;
+				directionalLight.position.z = -10;
+            //directionalLight.position.normalize();
+            //scene.add( directionalLight );
+pointLight= new THREE.PointLight( 0xffffff, 0.5);
+            scene.add( pointLight );
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				container.appendChild( renderer.domElement );
+				//
+				window.addEventListener( 'resize', onWindowResize, false );
+			}
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+
+			//
+          
+			function animate() {
+              //collada.scene.scale.x = collada.scene.scale.y = collada.scene.scale.z;
+           pointLight.position.x = camera.position.x;
+           pointLight.position.y = camera.position.y;
+           pointLight.position.z = camera.position.z;
+              requestAnimationFrame( animate );
+				  renderer.render( scene, camera );  
+			}
+		</script>
+	</body>
+
+
+</html>

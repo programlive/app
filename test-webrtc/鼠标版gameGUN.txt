@@ -1,0 +1,51 @@
+<html>
+
+  <body>
+    <div class="canvaspr" id="one">
+    <canvas id="myCanvas" width="400" height="400" style="position:absolute;z-index:1;" onmousemove="show_coords(event)" onClick="shoot(event)"></canvas>
+
+    <canvas id="myCanvas1"  width="400" height="400" style="position:absolute;background:#125500;z-index:0;" ></canvas>
+    </div>
+<script type="text/javascript">
+  //----------------------------------------------------射击画布------------------------
+var xGoal=0,yGoal=0;
+var c=document.getElementById("myCanvas");
+var cxt=c.getContext("2d");
+var c1=document.getElementById("myCanvas1");
+var cxt1=c1.getContext("2d");
+ 
+  function shoot(event) //背景画布显示弹孔
+  {
+  var x = event.clientX;
+ var y = event.clientY;    
+cxt1.fillStyle="#ff0000";
+cxt1.beginPath();
+cxt1.arc(x+11,y+16,5,0,Math.PI*2,true);
+cxt1.closePath();
+cxt1.fill();
+  }
+  
+ 
+  function show_coords(event)//使用鼠标移动事件触发该函数
+  {
+  var x = event.clientX;
+ var y = event.clientY;    
+  reticle(x,y);
+  }
+function reticle(x,y)  //画准星函数
+  {
+    cxt.clearRect(xGoal, yGoal,20,20); //delete 原来上次准星位置的图案
+    xGoal = x;
+    yGoal = y;
+ cxt.beginPath();//开始路径
+cxt.moveTo(10+x,10+y);
+cxt.lineTo(10+x,20+y);
+cxt.moveTo(5+x,15+y);
+cxt.lineTo(15+x,15+y);
+   cxt.stroke();//开始绘制线条
+    cxt.closePath();//要删除线条必须关闭路径
+  }
+  //--------------------------------------------射击画布----------------------------------
+</script>
+  </body>
+</html>

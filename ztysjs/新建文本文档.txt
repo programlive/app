@@ -1,0 +1,112 @@
+<html>
+  <head>
+    <style>
+      #container{
+        background:#D6CFC5;
+          width:30em;
+        
+      }
+       #parameter{
+margin:10px;  
+      }
+             #result{
+margin:10px;  
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"><p id="tilte"  style="text-align:center" >开间净高尺寸计算器</p>
+      <div id="parameter"><p id="tilte1">请输入参数</p>
+      <div id="parameter1">
+        H: <input size="5em" id="H1"/>
+        顶层抹灰厚度: <input size="2em" id="H2" value="15"/>
+        板厚: <input size="5em" id="H3" value="100"/></div>
+      <div id="parameter2">
+        <br/>
+        L: <input size="5em" id="L1"/>
+        墙1: <input size="5em" id="L2"/>
+        墙2: <input size="5em" id="L3"/>
+        墙面抹灰厚度: <input size="5em" id="BL"  value="20"/>
+        </div>
+      <div id="parameter3">
+        <br/>
+        B: <input size="5em" id="B1"/>
+        墙1: <input size="5em" id="B2"/>
+        墙2: <input size="5em" id="B3"/>     
+        <button  id="count" style="width:12em;" onClick="count()"> 开始计算 </button>
+        </div>
+         
+      </div>
+       <div id="result"><p id="tilte2">H L B D 数值输出区</p>
+         <div id="result1">
+         H = <input size="49em" id="HH1"/>
+        = <input size="5em" id="HH2"/>
+         </div>   
+          <div id="result2">
+        <br/>
+        L = <input size="50em" id="LL1"/>
+        = <input size="5em" id="LL2"/>
+         </div>        
+        <div id="result3">
+        <br/>
+        B = <input size="50em" id="BB1"/>
+        = <input size="5em" id="BB2"/>
+         </div>        
+        <div id="result4">
+        <br/>
+        D = <input size="50em" id="DD1"/>
+        = <input size="5em" id="DD2"/>
+         </div>        
+        <div id="result5">
+        <br/>
+          计算结果(直接复制进资料软件即可) : <br/>
+          <input size="69em" id="HLBD"/>
+        
+         </div>            
+      </div>
+    </div>
+    
+    <script>
+       var H1 = document.querySelector('#H1');
+       var H2 = document.querySelector('#H2');
+       var H3 = document.querySelector('#H3');
+       var L1 = document.querySelector('#L1');
+       var L2 = document.querySelector('#L2');
+       var L3 = document.querySelector('#L3');
+       var B1 = document.querySelector('#B1');
+       var B2 = document.querySelector('#B2');
+       var B3 = document.querySelector('#B3'); 
+       var BL = document.querySelector('#BL'); 
+       var HH1 = document.querySelector('#HH1');
+       var HH2 = document.querySelector('#HH2');
+       var LL1 = document.querySelector('#LL1');
+       var LL2 = document.querySelector('#LL2');    
+       var BB1 = document.querySelector('#BB1');
+       var BB2 = document.querySelector('#BB2');      
+       var DD1 = document.querySelector('#DD1');
+       var DD2 = document.querySelector('#DD2');    
+       var HLBD = document.querySelector('#HLBD');  
+      
+      function count()
+      {
+        HH1.value = H1.value +" - "+H2.value+" - "+H3.value;
+        HH2.value = H1.value - H2.value - H3.value;
+        LL1.value = L1.value +" - "+L2.value+" - "+L3.value+" - "+BL.value+" * " +2;
+        LL2.value = L1.value - L2.value - L3.value - BL.value*2;
+        BB1.value = B1.value +" - "+B2.value+" - "+B3.value+" - "+BL.value+" * " +2;
+        BB2.value = B1.value - B2.value - B3.value - BL.value*2; 
+        DD1.value = "开方("+LL2.value+" * "+LL2.value+" + "+BB2.value+" * "+BB2.value+")";
+        DD2.value = Math.round( Math.sqrt(LL2.value*LL2.value+BB2.value*BB2.value));       
+        
+        HLBD.value = HH2.value + "	" + LL2.value + "	" + BB2.value + "	" + DD2.value;
+      }
+      
+      
+      
+      
+    </script>
+    
+    
+    
+  </body>
+ <html>

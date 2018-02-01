@@ -1,0 +1,220 @@
+﻿<html>
+<head>
+<style>
+  #container{
+     margin: 0 auto;
+    width:100%em;
+
+    background:#197fa1;}
+  span{
+  
+    height:100%;
+width:6em; 
+    border-radius: 0.6em 0 0 0.6em;
+    /*  background:#0A526A;*/
+    color:white;
+         text-align:center;
+
+    display:-moz-inline-box; /* css注释：for ff2 */ 
+display:inline-block; 
+  }
+
+  
+  
+  #chat-box{
+
+    overflow:auto;
+     margin: 0 auto;
+        width:95%;
+    height:50%;
+     background:#FEFEFE;
+    border-radius: 0.6em;
+  }
+  #TEXT{
+
+    margin: 3 auto;
+        width:98%;
+    height:8%; 
+
+     background:#F0EFEF;
+    border-radius: 0.6em;
+
+  }
+  
+    #sendButton{
+         margin: 0 auto;
+        width:88%;
+    height:60%; 
+    border-radius: 0.6em;
+
+  }
+  
+  #send-message-area{
+      margin: 30 auto;
+        width:95%;
+    height:10%; 
+
+     background:#FEFEFE;
+    border-radius: 0.6em;
+  
+  
+  }
+  #posttext{
+     margin: 0.5% 0 0 0;
+        width:75%;
+    height:90%; 
+ 
+    border:0;
+  }
+  p{
+    
+    margin: 0 0 0 2%;
+    width:8em;
+     float:left;
+  }
+  
+   h1{
+
+    margin: 5% 10% 0% 5%;
+    width:50%;
+     float:left;
+    color:white;
+  }
+  
+#user-name{
+    text-align:center;
+    border-radius: 0.6em 0.6em 0 0 ;
+    background:#0A526A;
+    margin: 8% 0% 0% 5%;
+    width:20%;
+      height:4%; 
+     float:left;
+    color:white;
+  }
+
+  </style>
+</head>
+<body onload="UPDATE()">
+
+<div id="container">
+  <h1>Chat Window</h1>
+  <div id="user-name"></div>
+  <div id="chat-box"><div id="chat-row"></div></div>
+  <form id="send-message-area">
+    <p>Your message: <button type="button"  id="sendButton" onclick="SEND()">发送数据</button></p>
+    <textarea id="posttext" maxlength="120"></textarea>
+  </form>
+  <div style="height:4%;margin: 0 0 0 2%; color:white" id="COUNT"></div>
+  </div>
+<script type="text/javascript">
+  var sendTEXT =  document.querySelector("#posttext");
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp1=new XMLHttpRequest();
+      xmlhttp2=new XMLHttpRequest();
+      xmlhttp3=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp1=new ActiveXObject("Microsoft.XMLHTTP");
+    xmlhttp2=new ActiveXObject("Microsoft.XMLHTTP");
+    xmlhttp3=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+// open popup prompt for ask name of user
+ 	var name = prompt("输入昵称", "Guest");
+ // var name = "coolcall";
+// default name is 'Guest'
+
+ 
+while (strlen(name) >= 10) {
+  var name = prompt("输入过长，请选较短的昵称:", "Guest");
+}   
+  if (!name || name === ' ') {
+  name = "Guest";  
+} 
+  
+// strip tags
+name = name.replace(/(<([^>]+)>)/ig,"");
+// display name on page
+document.querySelector("#user-name").innerHTML="User: <strong>" + name + "</strong>";
+  
+  function GETSTATE()
+{
+xmlhttp1.open("POST","http://app.ruizhen.net/chat/ajax.php",true);
+xmlhttp1.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp1.send("function=getState");
+  xmlhttp1.onreadystatechange=function()
+  {
+  if (xmlhttp1.readyState==4 && xmlhttp1.status==200)
+    {
+      var data = JSON.parse(xmlhttp1.responseText);
+      document.querySelector("#COUNT").innerHTML="count : " +data.state;
+    }
+  }
+}
+
+  
+  function SEND()
+{ 
+xmlhttp2.open("POST","http://app.ruizhen.net/chat/ajax.php",true);
+xmlhttp2.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  xmlhttp2.send("function=send&nickname="+encodeURI(encodeURI(name))+"&message="+encodeURI(encodeURI(sendTEXT.value))+"");
+ sendTEXT.value=""
+xmlhttp2.onreadystatechange=function()
+  {
+ 
+  }
+ UPDATE();
+}
+    function UPDATE()
+{
+  GETSTATE();
+xmlhttp3.open("POST","http://app.ruizhen.net/chat/ajax.php",true);
+xmlhttp3.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp3.send("function=update");
+xmlhttp3.onreadystatechange=function()
+  { if (xmlhttp3.readyState==4 && xmlhttp3.status==200)
+    {
+      //document.querySelector("#chat-row").innerHTML=xmlhttp.responseText; 
+      var data = JSON.parse(xmlhttp3.responseText);
+      document.querySelector("#chat-row").innerHTML="";
+        if(data.text){  
+
+	          for (var i = 0; i < data.text.length; i++) {
+               
+                document.querySelector("#chat-row").innerHTML+="<div id='TEXT'>       "+ data.text[i]  +"    </div>";  
+      var spantext = document.querySelectorAll("span")[i];
+ 
+      if(spantext.childNodes[0].data == name)
+      {
+        spantext.style.background = "red";
+      }else{ spantext.style.background = "#0A526A";}
+         } 
+        }
+      var chatbox=document.querySelector("#chat-box");
+chatbox.scrollTop=chatbox.scrollHeight;//通过设置元素高度,达到最底部
+      
+
+    }
+  }
+}
+ 
+  function strlen(str){
+    var len = 0;
+    for (var i=0; i<str.length; i++) { 
+     var c = str.charCodeAt(i); 
+    //单字节加1 
+     if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) { 
+       len++; 
+     } 
+     else { 
+      len+=2; 
+     } 
+    } 
+    return len;
+}
+  
+</script>
+</body>
+</html>

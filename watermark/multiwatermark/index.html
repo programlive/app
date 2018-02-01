@@ -1,0 +1,153 @@
+﻿<html>
+  <head>
+    <title>打开多个file</title>
+<style>
+div.upload_append_list{ 
+    margin:10px;
+word-wrap: break-word; 
+border: 1px solid #066660; 
+float:left;
+
+}
+  .upload_append_list:hover,.upload_image:hover{background-color: #456;
+
+  
+ }     
+  .upload_append_list:active{background-color: #999;
+
+  }   
+  
+.upload_preview{border-top:1px solid #bbb; border-bottom:1px solid #bbb; background-color:#fff; overflow:hidden; _zoom:2;float:top;}
+.upload_image{height:180px; padding:5px;}
+
+</style>
+  </head>
+  <body style="background:white">
+x:<input id="xxx" type="text" size="4" value="100"/>
+y:<input id="yyy" type="text" size="4" value="100"/>
+    <br/>
+选择水印：<input id="watermark" type="file" size="30"/>
+   <br/>   
+     <div id="fileselect" style="width: 100%; ">
+选择图片：<input id="fileImage" type="file" size="30" name="fileselect[]" multiple=true />
+    <canvas id="wmCanvas" style="display: none;">抱歉，您的浏览器还不支持canvas。</canvas>  
+    <canvas id="myCanvas" style="display: none;">抱歉，您的浏览器还不支持canvas。</canvas> 
+    </div>
+
+<div id="preview" class="upload_preview"></div>
+<div id="watermarkpreview" class="upload_preview"></div>
+ 
+</body>
+</html>
+    <script>
+       fileInput= null;				//html file multi控件
+      watermark=null;   	//html file watermark控件
+       var html = null;   
+      var watermarkhtml = null;
+      var watermarkDataURL=null;
+      var fileFilter=[];				//过滤后的文件数组
+      fileInput=document.querySelector("#fileImage");
+      watermark=document.querySelector("#watermark"); 
+	  html = document.querySelector("#preview");
+      watermarkhtml = document.querySelector("#watermarkpreview");
+      contant = document.querySelector("#contant");
+      var wmImage=document.querySelector("#wmCanvas");//定义水印画布
+      var myImage=document.querySelector("#myCanvas");//定义画布
+       var context = myImage.getContext('2d');//得到画布内容接口
+       var wmcontext = wmImage.getContext('2d');//得到画布内容接口
+      var myimg = new Image();//定义图像1
+      var wmimg = new Image();//定义图像2
+      var xxx=document.querySelector("#xxx");//x坐标
+      var yyy=document.querySelector("#yyy");//y坐标
+      function filter(files) {		//选择文件组的过滤方法
+		var arrFiles = [];
+		for (var i = 0, file; file = files[i]; i++) {
+			if (file.type.indexOf("image") == 0) {
+				if (file.size >= 20148000) {
+					alert('您这张"'+ file.name +'"图片大小过大，应小于2m');	
+				} else {
+					arrFiles.push(file);	
+				}			
+			} else {
+				alert('文件"' + file.name + '"不是图片。');	
+			}
+		}
+		return arrFiles;
+	}
+      	//获取选择文件，file控件
+	function funGetFiles(e) {
+      // 获取文件列表对象
+		var files = e.target.files || e.dataTransfer.files;
+      		//继续添加文件
+      fileFilter.length=0;//注意，每次使用先清空全局数组
+      html.innerHTML ="";//注意，每次使用先清空图片预览区
+       fileFilter = fileFilter.concat(filter(files));
+      //alert("test:" +fileFilter.length);
+      onSelect(fileFilter);
+      
+	}
+      
+      function delExtension(str){//删除文件后续名
+	 var reg = /\.\w+$/;
+	 return str.replace(reg,'');
+	} 
+      
+     function onSelect(files) {
+		var  i = 0;
+		var funAppendImage = function() { 
+			file = files[i];
+        
+          if (file) {
+				var reader = new FileReader()
+				reader.onload = function(e) {
+          myimg.src = e.target.result;//获取图像数据
+          myimg.onload = function(){//图像数据获取完成后触发此异步函数响应
+        myImage.width = myimg.width;//画布宽度
+        myImage.height = myimg.height;
+        context.drawImage(myimg, 0, 0,myimg.width,myimg.height);//在画布上绘图
+        context.drawImage(wmimg, xxx.value, yyy.value,wmimg.width,wmimg.height);//在画布上绘图
+            var dataurl = myImage.toDataURL('image/png');
+                  
+                  html.innerHTML +=  '<div id="uploadList_'+ i +'" class="upload_append_list"><p><strong>' + file.name + '</strong><br/>'+ 
+            
+'<!-- <a href='+dataurl + ' download=' +delExtension(file.name) +'.png> download</a>' +'<a href ='+dataurl+ ' target ="showframe">-->' +
+						'<img id="uploadImage_' + i + '" src="' + dataurl+ '" class="upload_image" /></p></a>'+ 
+						'<span id="uploadProgress_' + i + '" class="upload_progress"></span>' +
+					'</div>';
+					i++;
+					funAppendImage();
+          }
+				}
+          }
+				reader.readAsDataURL(file);
+			} 
+       
+		funAppendImage();		
+	}
+      
+      function watermarkdispaly(e)
+      {
+        var file = e.target.files || e.dataTransfer.files;
+         if (file) { 
+				var reader = new FileReader()
+				reader.onload = function(e) {
+                   wmimg.src = e.target.result;//获取图像数据
+          wmimg.onload = function(){//图像数据获取完成后触发此异步函数响应
+        wmImage.width = wmimg.width;//画布宽度
+        wmImage.height = wmimg.height;
+        wmcontext.drawImage(wmimg, 0, 0,wmimg.width,wmimg.height);//在画布上绘图
+            wmImage.style = "display:block";
+          }
+                }
+                reader.readAsDataURL(file[0]);
+         }
+      }
+    
+      if (fileInput) {//监听多文件选择事件
+			fileInput.addEventListener("change", function(e) {self.funGetFiles(e);}, false);	
+		}
+      if (watermark) {//监听水印文件选择事件
+        watermark.addEventListener("change",function(e){watermarkdispaly(e);}, false);	
+		}
+			
+</script>

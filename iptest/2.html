@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <meta id="viewport" name="viewport" content="width=device-width,initial-scale=1.0;">  
+  <body style="background:white">
+
+      <div id="OrientationDATA"></div>
+<div id="devicemotionDATA"></div>
+    <script>
+       
+    
+      
+      function deviceOrientationListener(evt) {
+         var  ODATA= document.getElementById("OrientationDATA");
+var  DDATA= document.getElementById("devicemotionDATA");
+ 	              if (evt.gamma || evt.beta) {
+                    ODATA.innerHTML="Orientation<br/>";
+                    ODATA.innerHTML+="alpha:"+evt.alpha + "<br/>";
+                     ODATA.innerHTML+="beta:"+evt.beta + "<br/>";
+                     ODATA.innerHTML+="gamma:"+evt.gamma + "<br/>";
+	              }
+
+var accl = evt.acceleration;
+if (accl.x > 1 || accl.y > 1 || accl.z > 1) {
+DDATA.innerHTML="acceleration<br/>";
+DDATA.innerHTML+="X:"+accl.x + "<br/>";
+DDATA.innerHTML+="Y:"+accl.y + "<br/>";
+DDATA.innerHTML+="Z:"+accl.z + "<br/>";
+}
+      }
+window.screen.lockOrientation = screen.lockOrientation ||screen.mozLockOrientation || screen.msLockOrientation;
+window.screen.lockOrientation(["portrait-primary","portrait-secondary"]);
+      if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', deviceOrientationListener, false);
+  window.addEventListener('MozOrientation', deviceOrientationListener, false);
+   window.addEventListener('devicemotion', deviceOrientationListener, false);
+      } else {
+  alert("Sorry, your browser doesn't support Device Orientation");
+      }
+      
+
+    </script>
+  </body>
+</html>

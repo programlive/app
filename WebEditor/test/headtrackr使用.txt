@@ -1,0 +1,39 @@
+﻿<!doctype html>
+<html lang="en">
+	<head>
+		<title>facetracking</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+		<meta charset="utf-8">
+	
+	</head>
+	<body>
+		<script src="test/headtrackr.js"></script>
+		
+		<canvas id="compare" width="320" height="240" style="display:none"></canvas>
+		<video id="vid" autoplay loop width="320" height="240"></video>
+		<canvas id="overlay" width="320" height="240"></canvas>
+		<canvas id="debug" width="320" height="240"></canvas>
+		
+		<p id='gUMMessage'></p>
+		<p>Status : <span id='headtrackerMessage'></span></p>
+	
+
+		<script>
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+
+var constraints = {video: true};
+
+
+
+
+navigator.getUserMedia(constraints, function(stream) {
+  var video = document.querySelector("video");
+  video.src = window.URL.createObjectURL(stream);
+}, function(error) {
+  console.log("navigator.getUserMedia error: ", error);
+});
+
+
+		</script>
+	</body>
+</html>

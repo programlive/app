@@ -1,0 +1,245 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=gb2312" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap{width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+      		.menu,.MenuLeft,.Menuright,.Menucenter{
+			z-index:9999;
+			font-size:0.8em;
+           text-align:center;
+			position:absolute;
+			left:0px;
+            bottom:0px;
+			width:100%;
+			background:rgba(255,255,255,0.9);
+			height:1em;
+			line-height:1.5em;
+			padding:0.5em;
+         display:none;
+		}
+      .MenuLeft,.Menuright,.Menucenter{ 	
+ 
+			font-size:1em;
+			left:5%;
+        bottom:1em;
+			width:10%;
+			line-height:0.5em;
+        border-radius: 0.6em;
+        background:rgba(255,255,255,0.9);
+        height:1em;
+
+      }
+      .active{
+        display:block; 
+      }
+
+      
+	</style>
+	
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=S0gqQiA0V7jsW9aRObsKRUZI"></script>
+  <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
+
+	<title>瑞震浏览器定位</title>
+<script src="../TJscript.js"></script>
+</head>
+<body>
+<div id="allmap"></div>
+  <div id="left1" class="MenuLeft" ><<<</div><div id="right2" class="Menuright" style="left:80%;">>>></div>
+  <div id="center3" class="Menucenter" style="left:45%;" onclick="shenzhan(this)">向上</div>
+  <div id="one" class="menu"><strong id="gpsgz" onclick="listenForPositionUpdates()">GPS跟踪</strong><strong id="gpsdw" style="padding-left:2em" onclick="gpsPosition()">GPS定位</strong><strong id="ipdw" onclick="baiduPosition()" style="padding-left:2em">IP定位</strong></div>
+  <div id="two" class="menu"><strong id="xy">正在定位，请耐心等待...</strong></div>
+</body>
+</html>
+<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+  var point = new BMap.Point(116.331398,39.897445);
+  map.centerAndZoom(point,12);
+//---------------------
+  var xypoint = 0;//获取全局坐标
+  
+	var top_left_control = new BMap.ScaleControl({anchor: BMAP_ANCHOR_TOP_LEFT});// 左上角，添加比例尺
+  var top_left_navigation = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_LEFT,type:BMAP_NAVIGATION_CONTROL_ZOOM});  
+//左上角，添加默认缩放平移控件
+	/*缩放控件type有四种类型:
+	BMAP_NAVIGATION_CONTROL_SMALL：仅包含平移和缩放按钮；
+    BMAP_NAVIGATION_CONTROL_PAN:仅包含平移按钮；
+BMAP_NAVIGATION_CONTROL_ZOOM：仅包含缩放按钮*/
+	//添加控件和比例尺
+		map.addControl(top_left_control);        
+		map.addControl(top_left_navigation);   
+  //map.addControl(new BMap.MapTypeControl({anchor: BMAP_ANCHOR_TOP_RIGHT,mapTypes: [BMAP_NORMAL_MAP,BMAP_SATELLITE_MAP]}));   //添加地图类型控件  
+//------------------------
+	
+  var x=document.getElementById("xy");//获取元素
+   var one1=document.getElementById("one");//获取元素
+  var two2=document.getElementById("two");//获取元素
+ var Mright=document.getElementById("right2");//获取元素
+  var Mleft=document.getElementById("left1");//获取元素
+    var Mcenter=document.getElementById("center3");//获取元素
+one1.className += " " + "active";
+var menupage=0;
+  Mright.addEventListener("click", function() {
+    if(menupage == 0){ Mcenter.className += " " + "active";one1.className = "menu";Mleft.className += " " + "active"; two2.className += " " + "active"; 
+
+Mright.className="Menuright";menupage++;}
+  },false); 
+    Mleft.addEventListener("click", function() {
+    if(menupage == 1){ Mcenter.className = "menucenter";two2.className = "menu";Mleft.className += "MenuLeft"; one1.className += " " + "active"; 
+
+Mright.className += " " + "active";menupage--;}
+  },false);
+  
+  
+
+  function gpsPosition()//GPS定位
+  {
+xypoint=0;x.innerHTML="正在定位，请耐心等待...";
+      if(menupage == 0){ one1.className = "menu";Mleft.className += " " + "active"; two2.className += " " + "active";Mright.className="Menuright";menupage++;}
+  if (navigator.geolocation)//检查是否支持HTML5方法
+    {
+    navigator.geolocation.getCurrentPosition(showPosition,showError);
+    }
+  else{x.innerHTML="Geolocation is not supported by this browser.";}
+  }
+function showPosition(position)
+  {	
+      x.innerHTML="<div id=\"locationPosition\" onclick=\"returnPosition()\">我GPS的位置：["+position.coords.longitude+"]-["+position.coords.latitude+"]</div> ";
+    //   x.innerHTML= "您所在的位置:纬度[" + position.coords.latitude + "]经度[" +position.coords.longitude +"]<br>";
+     x.innerHTML += "经纬度的精度（米）" + position.coords.accuracy +"<br>";
+  x.innerHTML += "当前的高度，海拔（米 )" + position.coords.altitude +"<br>";
+  x.innerHTML += "高度的精度（米 )" + position.coords.altitudeAccuracy +"<br>";
+   x.innerHTML += "速度" + position.coords.speed +"<br>";
+  x.innerHTML += "朝向" + position.coords.heading +"<br>";
+    x.innerHTML += Date() +"<br>";
+    BMap.Convertor.translate(new BMap.Point(position.coords.longitude,position.coords.latitude),0,translateCallback);     //真实经纬度转成百度坐标
+  }
+function showError(error)
+  {
+  switch(error.code) 
+    {
+       
+    case error.PERMISSION_DENIED:
+      x.innerHTML="User denied the request for Geolocation."; 
+      break;
+    case error.POSITION_UNAVAILABLE:
+      x.innerHTML="Location information is unavailable."; 
+      break;
+    case error.TIMEOUT:
+      x.innerHTML="The request to get user location timed out."; 
+      break;
+    case error.UNKNOWN_ERROR:
+      x.innerHTML="An unknown error occurred."; 
+        baiduPosition;
+      break;
+    }
+  }
+  translateCallback = function (point){
+  var mk = new BMap.Marker(point);
+			map.addOverlay(mk);
+			map.panTo(point);
+    xypoint = point;
+    //    x.innerHTML="<div id=\"locationPosition\" onclick=\"returnPosition()\">我GPS的位置：["+point.lng+"]-["+point.lat+"]</div> ";
+
+GEOCODER();
+}
+
+  function baiduPosition(){
+xypoint=0;x.innerHTML="正在定位，请耐心等待...";
+        if(menupage == 0){ one1.className = "menu";Mleft.className += " " + "active"; two2.className += " " + "active"; 
+
+Mright.className="Menuright";menupage++;}
+  var geolocation = new BMap.Geolocation();
+	geolocation.getCurrentPosition(function(r){
+		if(this.getStatus() == BMAP_STATUS_SUCCESS){
+			var mk = new BMap.Marker(r.point);
+			map.addOverlay(mk);
+			map.panTo(r.point);
+          xypoint = r.point;
+         
+          x.innerHTML=" <div id=\"locationPosition\" onclick=\"returnPosition()\">我的IP位置：["+xypoint.lng+"]-["+xypoint.lat+"]</div> ";
+          x.innerHTML +=  Date() +"<br>";
+		GEOCODER();}
+		else {
+			x.innerHTML="failed"+this.getStatus();}        
+	},{enableHighAccuracy: true})
+    
+  
+	//关于状态码
+	//BMAP_STATUS_SUCCESS	检索成功。对应数值“0”。
+	//BMAP_STATUS_CITY_LIST	城市列表。对应数值“1”。
+	//BMAP_STATUS_UNKNOWN_LOCATION	位置结果未知。对应数值“2”。
+	//BMAP_STATUS_UNKNOWN_ROUTE	导航结果未知。对应数值“3”。
+	//BMAP_STATUS_INVALID_KEY	非法密钥。对应数值“4”。
+	//BMAP_STATUS_INVALID_REQUEST	非法请求。对应数值“5”。
+	//BMAP_STATUS_PERMISSION_DENIED	没有权限。对应数值“6”。(自 1.1 新增)
+	//BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
+	//BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
+}
+  function GEOCODER(){
+	var geoc = new BMap.Geocoder();    
+	  
+	var pt = new BMap.Point(xypoint.lng,xypoint.lat);
+		geoc.getLocation(pt, function(rs){
+			var addComp = rs.addressComponents;
+			x.innerHTML += addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " +addComp.streetNumber;Mcenter.className += " " + "active";
+          
+          if(GPSGZ != 0){
+            x.innerHTML+=" <div id=\"clearwatch\" onclick=\"Clear()\">取消跟踪</div> "; 
+      
+          }
+          
+		});        
+
+  }
+ function shenzhan(ts)
+  {
+    if(ts.innerHTML == "向上"){
+    ts.innerHTML="向下";
+     ts.style.height="35%";
+       two2.style.height="35%";}
+        else{
+    ts.innerHTML="向上";
+     ts.style.height="1em";
+       two2.style.height="1em";}
+  }
+  
+  function returnPosition(){
+    map.panTo(xypoint);
+  }
+  
+  //实时定位-------------------------------------------------------------
+var  GPSGZ =0;
+function listenForPositionUpdates() {  
+xypoint=0;x.innerHTML="正在定位，请耐心等待...";
+      if(menupage == 0){ one1.className = "menu";Mleft.className += " " + "active"; two2.className += " " + "active";Mright.className="Menuright";menupage++;}
+if (navigator.geolocation)
+    {
+    GPSGZ = navigator.geolocation.watchPosition(SPosition,getPositionError);
+    }
+  else{x.innerHTML="Geolocation is not supported by this browser.";}
+}
+
+  function SPosition(position){
+    showPosition(position);
+}
+function getPositionError(error) {
+    switch (error.code) {
+        case error.TIMEOUT:
+            alert("连接超时，请重试");
+            break;
+        case error.PERMISSION_DENIED:
+            alert("您拒绝了使用位置共享服务，查询已取消");
+            break;
+        case error.POSITION_UNAVAILABLE:
+            alert("获取位置信息失败");
+            break;
+    }
+}
+  function Clear(){navigator.geolocation.clearWatch(GPSGZ);  GPSGZ = 0;
+                   var cr=document.getElementById("clearwatch");//获取元素
+                  cr.innerHTML = " ";
+                  }
+//--------------------------------------------------------------------------
+</script>

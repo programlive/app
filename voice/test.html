@@ -1,0 +1,283 @@
+﻿<html>
+  <body style="background:white" onLoad="window_onload()">
+ <div class="wrapper">
+    <header>
+      <h1>Voice-change-O-matic</h1>
+    </header>
+    <canvas class="visualizer" width="640" height="100"></canvas> 
+    <form class="controls">
+      <div>
+        <label for="voice">Voice setting</label>
+        <select id="voice" name="voice">
+          <option value="distortion">Distortion</option>
+          <option value="convolver">Reverb</option>
+          <option value="biquad">Bass Boost</option>
+          <option value="off" selected>Off</option>
+        </select>
+      </div>
+      <div>
+        <label for="visual">Visualizer setting</label>
+        <select id="visual" name="visual">
+          <option value="sinewave"selected>Sinewave</option>
+          <option value="frequencybars" >Frequency bars</option>
+          <option value="off">Off</option>
+        </select>
+      </div>
+      <div>
+        <a id="mute">Mute</a>
+      </div>
+       
+    </form>
+  </div>
+     <canvas width="300em" height="300em" id="myCanvas"></canvas>
+</body>
+</html>
+
+<script>
+  // fork getUserMedia for multiple browser versions, for those
+// that need prefixes
+ 
+  navigator.getUserMedia = (navigator.getUserMedia ||
+                          navigator.webkitGetUserMedia ||
+                          navigator.mozGetUserMedia ||
+                          navigator.msGetUserMedia);
+
+// set up forked web audio context, for multiple browsers
+// window. is needed otherwise Safari explodes
+var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+var voiceSelect = document.getElementById("voice");
+var source;
+var stream;
+ //set up the different audio nodes we will use for the app
+
+var analyser = audioCtx.createAnalyser();
+analyser.minDecibels = -90;
+analyser.maxDecibels = -10;
+analyser.smoothingTimeConstant = 0.85;
+
+var distortion = audioCtx.createWaveShaper();
+var gainNode = audioCtx.createGain();
+var biquadFilter = audioCtx.createBiquadFilter();
+var convolver = audioCtx.createConvolver();
+  
+  //main block for doing the audio recording
+
+if (navigator.getUserMedia) {
+   console.log('getUserMedia supported.');
+   navigator.getUserMedia (
+      // constraints - only audio needed for this app
+      {
+        audio: true
+      },
+
+      // Success callback
+      function(stream) {
+         source = audioCtx.createMediaStreamSource(stream);
+         source.connect(analyser);
+         analyser.connect(distortion);
+         distortion.connect(biquadFilter);
+         biquadFilter.connect(convolver);
+         convolver.connect(gainNode);
+         gainNode.connect(audioCtx.destination);
+
+      	 visualize();
+        // voiceChange();
+      },
+      // Error callback
+      function(err) {
+         console.log('The following gUM error occured: ' + err);
+      }
+   );
+} else {
+   console.log('getUserMedia not supported on your browser!');
+}
+  
+  // set up canvas context for visualizer
+
+var canvas = document.querySelector('.visualizer');
+var canvasCtx = canvas.getContext("2d");
+
+var intendedWidth = document.querySelector('.wrapper').clientWidth;
+
+canvas.setAttribute('width',intendedWidth);
+
+var visualSelect = document.getElementById("visual");
+ var count=0;//db检测频率
+var drawVisual;
+  
+  visualSelect.onchange = function() {
+  window.cancelAnimationFrame(drawVisual);
+  visualize();
+}
+  
+  function visualize() {
+  WIDTH = canvas.width;
+  HEIGHT = canvas.height;
+  var visualSetting = visualSelect.value;
+  console.log(visualSetting);
+  if(visualSetting == "sinewave") {
+    analyser.fftSize = 2048;
+    var bufferLength = analyser.fftSize;
+   
+    console.log(bufferLength);
+    var dataArray = new Uint8Array(bufferLength);
+    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+
+    function draw() {
+
+      drawVisual = requestAnimationFrame(draw);
+
+      analyser.getByteTimeDomainData(dataArray);
+
+      canvasCtx.fillStyle = 'rgb(900, 200, 900)';
+      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      canvasCtx.lineWidth = 2;
+      canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+
+      canvasCtx.beginPath();
+      var sliceWidth = WIDTH * 1.0 / bufferLength;
+      var x = 0;
+
+      for(var i = 0; i < bufferLength; i++) {
+   
+        var v = dataArray[i] / 128.0;
+        var y = v * HEIGHT/2;
+
+        if(i === 0) {
+          canvasCtx.moveTo(x, y);
+        } else {
+          canvasCtx.lineTo(x, y);
+        }
+
+        x += sliceWidth;
+      }
+
+      canvasCtx.lineTo(canvas.width, canvas.height/2);
+      canvasCtx.stroke();
+    };
+
+    draw();
+
+  } else if(visualSetting == "frequencybars") {
+    analyser.fftSize = 256;
+    var bufferLength = analyser.frequencyBinCount;
+    console.log(bufferLength);
+    var dataArray = new Uint8Array(bufferLength);
+
+    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    function draw() {
+      drawVisual = requestAnimationFrame(draw);
+
+      analyser.getByteFrequencyData(dataArray);
+
+      canvasCtx.fillStyle = 'rgb(0, 0, 0)';
+      canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+      var barWidth = (WIDTH / bufferLength) * 1.5;
+      var barHeight;
+      var x = 0;
+      var average = 0;
+      var db = 0;
+      for(var i = 0; i < bufferLength; i++) {
+        barHeight = dataArray[i];
+        canvasCtx.fillStyle = 'rgb(' + (barHeight+100) + ',50,50)';
+        canvasCtx.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight/2);
+        x += barWidth + 1;
+       average += parseFloat(dataArray[i]);
+       // average += dataArrayr[i] * dataArray[i];  
+      }
+      count++;
+      if(average>1 && count >=8){count=0;
+                                 //Math.sqrt(average); 
+                                
+      average = (average/i)/0.00000001;
+                                // mute.innerHTML=average;
+      db = 20 * Math.log10(average); 
+       draw1(db-100);
+      
+      }
+    };
+
+    draw();
+
+  } else if(visualSetting == "off") {
+    canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+    canvasCtx.fillStyle = "red";
+    canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+  }
+
+}
+ 
+  var canvas1,context,sec;
+function window_onload(){
+    canvas1 = document.getElementById("myCanvas");
+    context = canvas1.getContext("2d");
+    draw1(30);
+}
+function draw1(sec){
+  var radius = Math.min(canvas1.width/2,canvas1.height/2),
+      sec=sec+100;
+
+    
+      //初始化画布
+      context.save();
+      context.clearRect(0,0,canvas1.width,canvas1.height);   
+  context.translate(canvas1.width/2,canvas1.height/2);       
+      context.scale(0.9,0.9);
+      context.save();
+
+      //大刻度
+      context.strokeStyle="black";
+      context.fillStyle="black";
+      context.lineWidth=3;
+      context.lineCap="round";
+      context.beginPath();
+      for(var i=0;i<10;i++){
+        context.rotate(-Math.PI/10);
+        context.moveTo(radius-30,0);
+        context.lineTo(radius-10,0);
+      }
+      context.stroke();
+      context.restore();
+      context.save();
+     
+      //小刻度
+      context.lineWidth=2;
+      context.beginPath();
+      for(var i=0;i<30;i++){
+        if(i%3!=0){
+          context.moveTo(radius-15,0);
+          context.lineTo(radius-10,0);
+        }
+        context.rotate(-Math.PI/30);
+      }
+      context.stroke();
+      context.restore();
+      context.save();
+      //指针
+  context.rotate(sec*Math.PI/100);
+      context.strokeStyle="red";
+      context.lineWidth=2;
+      context.lineCap="butt";
+      context.beginPath();
+      context.moveTo(38,0);
+      context.lineTo(radius*0.9,0);
+      context.stroke();
+      context.restore();
+      context.save();
+     
+      ///表框     
+  context.font="20px Georgia";
+      context.lineWidth=4;
+      context.strokeStyle="gray";
+      context.beginPath();
+      context.arc(0,0,radius,0,Math.PI,true);
+  context.arc(0,0,radius/4,0,Math.PI,true);
+   context.fillText(parseInt(sec-100),-10,-8);
+  context.closePath();//封底
+      context.stroke();
+      context.restore();
+      context.restore();
+}
+</script>

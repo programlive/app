@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta http-equiv="content-Type" content="text/html; charset=gb2313" />
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <title>日期计算器-实用工具</title>
+  <style>
+    body {
+      margin: 0 auto;
+      padding: 0;
+  background-color: #f2f2f2;
+  font-family:none;
+  margin-top:0em;
+  font-size: 1.5em;
+}
+.iv{
+      padding-top:2em;
+      width:17em;
+      height:30em;
+  margin: 0 auto;
+  text-align: center;
+
+}
+h1 {
+  color: #969996;
+  text-shadow: 0.01em 0.01em 0em #fff;
+  font-weight: 100em;
+      font-size: 3em;
+}
+ h1 span {
+  display:block;
+  font-size: 0.3em;
+  color: #bbb;
+ }
+form p { position: relative; }
+
+.one {
+  padding: 1em 0em;
+  margin-bottom: 0.1em;
+  border: 0.1em solid #cccccc;
+  border-bottom-color: #fff;
+  border-right-color: #fff;
+  border-radius: 0.1em;
+  border-top-left-radius: 1em;
+  border-bottom-right-radius: 1em;
+  background: #e3e3e3;
+  color: #888;
+  width:15em;
+  text-align: center;
+       font-size: 1em;
+}
+
+    #show:hover {
+  background: #555555;
+} 
+
+footer p{
+  margin: 0 auto;
+  padding: 0;
+  font-family:none;
+  margin-top:0em;
+  font-size: 0.5em;
+  text-align: center;
+} 
+</style>
+<script src="../TJscript.js"></script>
+
+</head>
+<body>
+  <div class="iv" id="ivv">
+  <h1>日期计算器 <span id ="sp">输入两个日期比较或推算日期</span></h1>
+  <form>
+    <input type="date" class="one"  value="" placeholder="输入日期一 例:" id="date1" onFocus="date1focus();" /><p/>
+    <input type="date" class="one"  value="" placeholder="输入日期二" id="date2" onFocus="change(1);" /><p/>
+    <input type="text"  class="one"  value="" placeholder=" 相差天数(输入负数则往前计算)" id="day" onFocus="change(2);" /><p/>
+    <input tupe="text"  class="one"  id="show"  onclick="count();" readonly="true" value="开始计算" />
+  </form>
+</div>
+
+<script> 
+
+  function change(chD)
+  {
+    if(chD == "1"){day.value="";sp.innerHTML="输入两个日期比较";}
+    if(chD == "2"){date2.value="";sp.innerHTML="推算日期";}
+    show.value="开始计算";
+  
+  }
+var countDate=0;
+  function date1focus()
+  {
+
+if(countDate == 0){ date1.value = now.Format("yyyy-MM-dd");countDate=1;}
+  }
+
+  function count()
+  {
+       s1  =  date1.value;   
+    if(day.value == ""){
+       s2  =  date2.value; 
+show.value= "日数相差" +DateDiff(s1, s2) + "日";
+    }
+    else if(day.value != "")
+    {
+
+       s2 = parseInt(day.value); 
+      now.addDays(s2);
+  
+
+    }
+  }
+  
+     //计算天数差的函数，通用 
+   function  DateDiff(sDate1,  sDate2)
+  {    //sDate1和sDate2是2006-12-18格式 
+       var  aDate,  oDate1,  oDate2,  iDays ;
+       aDate  =  sDate1.split("-") ;
+    oDate1  =  new Date(aDate[1]  +  '/'  +  aDate[2]  +  '/'  +  aDate[0]); //转换为12-18-2006格式 
+       aDate  =  sDate2.split("-") ;
+    oDate2  =  new Date(aDate[1]  +  '/'  +  aDate[2]  +  '/'  +  aDate[0]) ;
+       iDays  =  parseInt(Math.abs(oDate1  -  oDate2)  /  1000  /  60  /  60  /24); //把相差的毫秒数转换为天数 
+    // show.innerHTML=iDays;
+       return  iDays ;
+     }   
+  
+  Date.prototype.Format = function (fmt) //输出日期格式方法例：now.Format("yyyy-MM-dd")
+  { //author: meizz 
+    var o = {
+        "M+": this.getMonth() + 1, //月份 
+        "d+": this.getDate(), //日 
+        "h+": this.getHours(), //小时 
+        "m+": this.getMinutes(), //分 
+        "s+": this.getSeconds(), //秒 
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+        "S": this.getMilliseconds() //毫秒 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
+}
+  Date.prototype.addDays = function(d)//prototype可为对象增加属性和方法。此方法为日期增加或减除日数.
+{
+aDate = date1.value;
+   aDate = aDate.split("-") ;//获取日期1的字符串
+    oDate1  =  new Date(aDate[1]  +  '/'  +  aDate[2]  +  '/'  +  aDate[0]); //转换为12-18-2006格式 
+    oDate1.setDate(oDate1.getDate() + d);//getDate()获取日期再做计算
+   show.value=oDate1.Format("yyyy-MM-dd");
+};
+  
+  function displaySize()//获取网页窗口大小，改变相应显示    
+  {
+    var Wsize=document.body.clientWidth;
+    var Hsize=document.body.clientHeight;
+    var wh=Wsize/Hsize;
+    if(wh >= 0.7)document.body.style.fontSize = wh*1 + "em"; 
+      if(wh < 0.7)document.body.style.fontSize = wh*2.6 + "em"; 
+    document.getElementById("date1").style.width=show.offsetWidth + "px"//改style只能经过document.getElementById赋值,show.offsetWidth能查找ID的实际像素px.
+    document.getElementById("date2").style.width=show.offsetWidth + "px";//因为输入框类型不同，所以使用em不能兼容对齐，但像素可以，解决方法就是那一个输入框作为参考像素修正窗口调整后的像素.
+  }
+  var now = new Date();
+  date1.placeholder +=now.Format("yyyy-MM-dd");
+window.addEventListener("load",displaySize(),false);
+  
+  </script>
+<footer>
+  <p>HTML5 WebApp: <a href="http://app.ruizhen.net/" target="_blank">app.ruizhen.net</a></p>
+</footer>
+</body>
+</html>

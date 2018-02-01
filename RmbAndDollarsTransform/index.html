@@ -1,0 +1,283 @@
+﻿<html>
+  
+<title>美元\人民币大写转换器_美元大写数字转换器_英文大写转换器</title>
+<meta name="keywords" content="美元\人民币转换器,美元数字转换器,美元数字大写转换器" >
+<style>
+  body{
+        margin: 0 auto;
+      padding: 0;
+  background-color: #f2f2f2;
+  font-family:none;
+  margin-top:0em;
+  font-size: 1.5em;
+
+  }
+
+.one {
+ text-align:center; padding:10px 0;
+  border: 0.1em solid #cccccc;
+  border-bottom-color: #fff;
+  border-right-color: #fff;
+  border-radius: 0.1em;
+  border-top-left-radius: 1em;
+  border-bottom-right-radius: 1em;
+  background: #e3e3e3;
+  color: #888;
+  width:17em;
+       font-size: 1em;
+}
+.main{margin: 0 auto;
+ text-align:center; padding:10px 0;
+
+}
+.chainfo{margin: 0 auto; font-size: 0.7em; width:50%;}
+</style>
+  <body>
+    <div class="main"  >
+	      <div class="topsep2"><h1>美元/人民币大写转换器</h1></div>
+			  <style>
+			  .chadiv p{ padding:3px 0;}
+			  </style>
+				<form name="wawa" id="wawa">
+				<p>请输入阿拉伯数字：</p>
+				<textarea name="num" cols="90" rows="1" id="num"  class="one"></textarea>
+                  <br/>
+				<input name="button" type="button" class="bt" onclick="doTransCnEn(this.form.num)" value="转换为美元大写/人民币大写" />&nbsp;
+				<input name="Button" type="button" class="bt" onclick="num.value='';cn.value='';en.value=''" value="清 空" />
+				<span id="mdg"></span>
+				<p>美元大写格式：</p>
+				<textarea name="en" cols="90" rows="6"  id="en"  class="one"></textarea>
+				<p>人民币大写格式：</p>
+				<textarea name="cn" cols="90" rows="6"  id="cn"  class="one"></textarea>
+				</form>
+			  </div>
+    <footer class="chainfo">
+ <p>HTML5 WebApp: <a href="http://app.ruizhen.net/" target="_blank" style="color:black">app.ruizhen.net</a></p>
+
+</footer>
+ <div class="chainfo">
+<p>支持带小数点的美元金额（精确到小数点后两位）大小写转换。</p>
+<p><h2>在线美元大写转换器</h2><b>使用手册</b>
+可智能的将阿拉伯数字转换成美元大写，美元/人民币金额大写转换器，全力为你提供美元大写数字转换器服务，是必备的英文数字转换器
+<p>使用时在最上方输入框填入你要转换的阿拉伯数字金额，点击转换按钮，即可在下方转换出该数字的美元大写格式写法，同时提供人民币大写写法。</p>
+<p><b>技术代码来源:</b></p>
+<p>我爱IT技术网-http://www.52ij.com。</p>
+
+
+		  </div>
+  </body>
+  <script src="../TJscript.js"></script>
+ 
+
+</html>
+<script>
+
+function doTransCnEn(a) {
+	
+    document.getElementById("cn").value = doToCn(a.value);
+	if(a.value.indexOf(".")!=-1){
+		var aaaaa = a.value.split(".")[0];
+		//alert(aaaaa);
+		var bbbbb = a.value.split(".")[1];
+		var ddddd;
+		//alert(bbbbb.length);
+		var ccccc = doToEnWuxiaoshudian(aaaaa);
+		
+		if(bbbbb.length>2){
+			alert("请精确到小数点后两位！如：6324.38")
+		}else{
+		
+		 ddddd = doToEnYouxiaoshudian(bbbbb);
+		 
+		}
+		document.getElementById("en").value = ccccc+" AND " + ddddd;
+		
+	}
+	else{
+	  document.getElementById("en").value = doToEn(a.value);
+	}
+}
+
+function doToCn(a) {
+    var b = 9.999999999999E10,
+       f = "零",
+       h = "壹",
+       g = "贰",
+       e = "叁",
+       k = "肆",
+       p = "伍",
+       q = "陆",
+       r = "柒",
+       s = "捌",
+       t = "玖",
+       l = "拾",
+       d = "佰",
+       i = "仟",
+       m = "万",
+       j = "亿",
+       o = "元",
+       c = "角",
+       n = "分",
+       v = "整";
+
+    a = a.toString();
+    if (a == "") { 
+        alert("请输入数字!");
+        return "";
+    }
+    if (a.match(/[^,.\d]/) != null) {
+        alert("请不要输入别的字符！");
+        return "";
+    }
+    if (a.match(/^((\d{1,3}(,\d{3})*(.((\d{3},)*\d{1,3}))?)|(\d+(.\d+)?))$/) ==
+    null) {
+        alert("非法格式！");
+        return "";
+    }
+    a = a.replace(/,/g, "");
+    a = a.replace(/^0+/, "");
+    if (Number(a) > b) {
+        alert("输入数字过大，最大数字为99999999999.99！");
+        return "";
+    }
+    b = a.split(".");
+    if (b.length > 1) {
+        a = b[0];
+        b = b[1];
+        b = b.substr(0, 2)
+    } else {
+        a = b[0];
+        b = "";
+    }
+    h = new Array(f, h, g, e, k, p, q, r, s, t);
+    l = new Array("", l, d, i);
+    m = new Array("", m, j);
+    n = new Array(c, n);
+    c = "";
+    if (Number(a) > 0) {
+        for (d = j = 0; d < a.length; d++) {
+            e = a.length - d - 1;
+            i = a.substr(d,
+            1);
+            g = e / 4;
+            e = e % 4;
+            if (i == "0") j++;
+            else {
+                if (j > 0) c += h[0];
+                j = 0;
+                c += h[Number(i)] + l[e];
+            }
+            if (e == 0 && j < 4) c += m[g];
+        }
+        c += o;
+    }
+    if (b != "") for (d = 0; d < b.length; d++) {
+        i = b.substr(d, 1);
+        if (i != "0") c += h[Number(i)] + n[d];
+    }
+    if (c == "") c = f + o;
+    if (b.length < 2) c += v;
+    return c = "人民币大写：" + c
+}
+var arr1 = new Array("", " thousand", " million", " billion"),
+    arr2 = new Array("zero", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"),
+    arr3 = new Array("zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"),
+    arr4 = new Array("ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen");
+
+function doToEn(a) {
+	//alert(a);
+    var b = a.length,
+        f, h = 0,
+        g = "",
+        e = Math.ceil(b / 3),
+        k = b - e * 3;
+        g = "";
+    for (f = k; f < b; f += 3) {
+        ++h;
+        num3 = f >= 0 ? a.substring(f, f + 3) : a.substring(0, k + 3);
+        strEng = English(num3);
+        if (strEng != "") {
+            if (g != "") g += ",";
+            g += English(num3) + arr1[e - h]
+        }
+    }
+    return "U.S. DOLLARS "+g.toUpperCase()+" ONLY";
+}
+
+function doToEnWuxiaoshudian(a) {
+	//alert(a);
+    var b = a.length,
+        f, h = 0,
+        g = "",
+        e = Math.ceil(b / 3),
+        k = b - e * 3;
+        g = "";
+    for (f = k; f < b; f += 3) {
+        ++h;
+        num3 = f >= 0 ? a.substring(f, f + 3) : a.substring(0, k + 3);
+        strEng = English(num3);
+        if (strEng != "") {
+            if (g != "") g += ",";
+            g += English(num3) + arr1[e - h]
+        }
+    }
+    return "U.S. DOLLARS "+g.toUpperCase();
+}
+
+function doToEnYouxiaoshudian(a) {
+	//alert(a);
+    var b = a.length,
+        f, h = 0,
+        g = "",
+        e = Math.ceil(b / 3),
+        k = b - e * 3;
+        g = "";
+    for (f = k; f < b; f += 3) {
+        ++h;
+        num3 = f >= 0 ? a.substring(f, f + 3) : a.substring(0, k + 3);
+        strEng = English(num3);
+        if (strEng != "") {
+            if (g != "") g += ",";
+            g += English(num3) + arr1[e - h]
+        }
+    }
+    return "CENTS "+g.toUpperCase()+" ONLY";
+}
+
+
+function English(a) {
+    strRet = "";
+    if (a.length == 3 && a.substr(0, 3) != "000") {
+        if (a.substr(0, 1) != "0") {
+            strRet += arr3[a.substr(0, 1)] + " hundred";
+            if (a.substr(1, 2) != "00") strRet += " and "
+        }
+        a = a.substring(1);
+    }
+    if (a.length == 2)
+        if (a.substr(0, 1) == "0") a = a.substring(1);
+        else if (a.substr(0, 1) == "1") strRet += arr4[a.substr(1, 2)];
+    else {
+        strRet += arr2[a.substr(0, 1)];
+        if (a.substr(1, 1) != "0") strRet += "-";
+        a = a.substring(1)
+    } if (a.length == 1 && a.substr(0, 1) != "0") strRet += arr3[a.substr(0, 1)];
+    return strRet;
+};
+
+function findObj(a, b) {
+    var c, d;
+    b || (b = document);
+    if ((c = a.indexOf("?")) > 0 && parent.frames.length) {
+        b = parent.frames[a.substring(c + 1)].document;
+        a = a.substring(0, c);
+    }
+    if (!(d = b[a]) && b.all) d = b.all[a];
+    for (c = 0; !d && c < b.forms.length; c++) d = b.forms[c][a];
+    for (c = 0; !d && b.layers && c < b.layers.length; c++) d = findObj(a, b.layers[c].document);
+    if (!d && document.getElementById) d = document.getElementById(a);
+    return d;
+}
+
+
+</script>

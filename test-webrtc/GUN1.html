@@ -1,0 +1,329 @@
+﻿<html>
+  <meta name="viewport" content="width=device-width,user-scalable=no, initial-scale=1.0">
+  <head>
+    <style>
+      #shooting
+      {
+        background:red;height:150px;width:150px;border: 5px solid #6556de;border-radius:100%;
+      }
+    </style>
+  </head>
+<body>
+    B: <br>
+  <div id="container">
+    <div id="buttons">
+       <button id="startButtonB">StartB</button>
+      <button id="sendButton" disabled>Send</button>
+      <button id="closeButton" disabled>Stop</button>
+    </div>
+    <div id="sendReceive">
+      <div id="send">
+        <h2>Send</h2>
+        <div id="OrientationDATA" class="title">陀螺仪(Orientation)无数据</div>
+    <div id="OrientationDATA1"></div>
+        <div id="devicemotionDATA" class="title">运动计(Motion)无数据</div>
+    <div id="devicemotionDATA1"></div>
+        <div id="shooting"></div>
+        <textarea id="dataChannelSend" style="display:none"  placeholder="Press Start, enter some text, then press Send." disabled></textarea>
+      </div>
+      <div id="receive">
+        <h2>Receive</h2>
+        <textarea id="dataChannelReceive" disabled></textarea>
+      </div>
+    </div>
+  </div>
+      <div id="swap"style="display:none" >
+        <h2>swap area</h2>
+        <textarea id="SwapArea" style="height:500px;width:100%;"></textarea>
+      </div>
+      <script src="http://app.ruizhen.net/test-webrtc/adapter.js"></script>
+    <script src="http://app.ruizhen.net/test-webrtc/common.js"></script>
+    <script>
+       var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp1=new XMLHttpRequest();
+      xmlhttp2=new XMLHttpRequest();
+      xmlhttp3=new XMLHttpRequest();
+  }
+      var pc;
+      var sendChannel;
+    
+      var iceone=1;
+      var ajaxSend=1;
+      var display123;
+
+      var dataChannelSend = document.querySelector('textarea#dataChannelSend');
+var receiveChannel;
+var dataChannelReceive = document.querySelector('textarea#dataChannelReceive');
+var SwapArea = document.querySelector('textarea#SwapArea');
+      var startButtonB = document.querySelector('button#startButtonB');
+var sendButton = document.querySelector('button#sendButton');
+var closeButton = document.querySelector('button#closeButton');
+startButtonB.onclick = createConnection;
+sendButton.onclick = sendData;
+closeButton.onclick = closeDataChannels;
+        // stun和turn服务器
+        var iceServer = {
+            "iceServers": [{
+                "urls": "stun:stun.counterpath.com"
+            }, {
+                "urls": "turn:numb.viagenie.ca",
+                "username": "webrtc@live.com",
+                "credential": "muazkh"
+          }]
+       };
+       function createConnection()
+      {
+   display123="";
+        // 创建PeerConnection实例 (参数为null则没有iceserver，即使没有stunserver和turnserver，仍可在局域网下通讯)
+        pc = new RTCPeerConnection(null);
+        // Created send data channel
+   sendChannel = pc.createDataChannel('sendDataChannel',null);
+  console.log('Created send data channel');
+ pc.ondatachannel = receiveChannelCallback;
+  sendChannel.onopen = onSendChannelStateChange;
+  sendChannel.onclose = onSendChannelStateChange;
+  //ice网络地址响应函数   
+ pc.onicecandidate = function(event){ 
+ if (event.candidate) {
+display123 += ","+JSON.stringify({"event": "an_ice_candidate", "data": { "candidate": event.candidate} });
+console.log("ice");
+            }else{
+           console.log("done");
+             SEND("ice",display123);
+          }
+        };           
+         UPDATE();        
+      }
+        // 发送answer的函数，发送本地session描述
+        var  sendAnswerFn = function(desc){
+            pc.setLocalDescription(desc);
+            display123 += JSON.stringify({  "event": "_answer", "data": { "sdp": desc} });
+        console.log("answersdp");
+        };
+
+function onSendChannelStateChange() {
+  var readyState = sendChannel.readyState;
+  trace('Send channel state is: ' + readyState);
+  if (readyState === 'open') {
+    deviceO();//当可发送数据时绑定手机陀螺仪传感器
+    dataChannelSend.disabled = false;
+    // dataChannelReceive.disabled = false;
+    dataChannelSend.focus();
+    sendButton.disabled = false;
+    closeButton.disabled = false;
+  } else {
+    dataChannelSend.disabled = true;
+    sendButton.disabled = true;
+  }
+}
+   
+      function onAddIceCandidateSuccess() {
+  trace('AddIceCandidate success.');
+}
+
+function onAddIceCandidateError(error) {
+  trace('Failed to add Ice Candidate: ' + error.toString());
+}
+     
+      
+     function onCreateSessionDescriptionError(error) {
+  trace('Failed to create session description: ' + error.toString());
+}
+
+function sendData() {
+  var data = dataChannelSend.value;
+  sendChannel.send(data);
+  trace('Sent Data: ' + data);
+}
+      function receiveChannelCallback(event) {
+  trace('Receive Channel Callback');
+  receiveChannel = event.channel;
+  receiveChannel.onmessage = onReceiveMessageCallback;
+  receiveChannel.onopen = onReceiveChannelStateChange;
+  receiveChannel.onclose = onReceiveChannelStateChange;
+}
+     
+      function onReceiveMessageCallback(event) {
+  trace('Received Message');
+  dataChannelReceive.value = event.data;
+}
+      function onReceiveChannelStateChange() {
+  var readyState = receiveChannel.readyState;
+  trace('Receive channel state is: ' + readyState);
+}
+ 
+    
+function closeDataChannels() {
+  trace('Closing data channels');
+  sendChannel.close();
+  trace('Closed data channel with label: ' + sendChannel.label);
+  receiveChannel.close();
+  trace('Closed data channel with label: ' + receiveChannel.label);
+  pc.close();
+  pc = null;
+  trace('Closed peer connections');
+  startButtonB.disabled = false;
+  sendButton.disabled = true;
+  closeButton.disabled = true;
+  dataChannelSend.value = '';
+  dataChannelReceive.value = '';
+  dataChannelSend.disabled = true;
+  disableSendButton();
+  enableStartButton();
+} 
+ 
+   function enableStartButton() {
+  startButtonB.disabled = false;
+}
+function disableSendButton() {
+  sendButton.disabled = true;
+}
+    function SEND(name,swap)
+{ 
+  SwapArea.value="["+swap+"]";
+  xmlhttp1.open("POST","http://app.ruizhen.net/test-webrtc/test.php",true);
+xmlhttp1.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  xmlhttp1.send("function=send&name="+name+"&message="+ encodeURIComponent(SwapArea.value));
+  //一定一定记得用这函数编码，js会把+&等符号理解为操作符，以空格替换
+  //console.log("send: "+SwapArea.value);
+}
+       function CLEAN()
+{ 
+  console.log("clean");
+SwapArea.innerHTML="";
+}
+    var iceread=0;
+    function UPDATE()
+      {  if(SwapArea.value){readsdpice();return;}
+xmlhttp3.open("POST","http://app.ruizhen.net/test-webrtc/test.php",true);
+xmlhttp3.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp3.send("function=update");
+xmlhttp3.onreadystatechange=function()
+  { 
+    if (xmlhttp3.readyState==4 && xmlhttp3.status==200)
+    {     
+     CLEAN();
+  SwapArea.value = decodeURIComponent(xmlhttp3.responseText);//对应解码函数
+       readsdpice();
+      }}
+  } 
+    function readsdpice()
+     {
+      var json = JSON.parse(SwapArea.value);
+    var i=0;
+      for(i in json){
+        var sdpice = json[i];
+      console.log(sdpice);
+          //如果是一个ICE的候选，则将其加入到PeerConnection中，否则设定对方的session描述为传递过来的描述
+        if( sdpice.event === "of_ice_candidate"){
+                                      console.log('onmessage: ',sdpice.event);
+               pc.addIceCandidate(new RTCIceCandidate(sdpice.data.candidate)).then(
+ onAddIceCandidateSuccess,
+      onAddIceCandidateError
+             );
+        } else if( sdpice.event === "_offer") {
+       pc.setRemoteDescription(new RTCSessionDescription(sdpice.data.sdp));
+   pc.createAnswer(sendAnswerFn, function (error) {console.log('Failure callback: ' + error);});
+          }
+      }
+      }
+      //-------------------------------------------触控--------------------
+     var  shooting= document.querySelector('div#shooting');
+     
+      function load (){
+    shooting.addEventListener('touchstart',touch,false);
+    shooting.addEventListener('touchmove',touch,false);
+    shooting.addEventListener('touchend',touch,false);
+    
+    function touch (event){
+        var event = event || window.event;
+         
+        var oInp = document.getElementById("inp");
+        switch(event.type){
+            case "touchstart":
+                 shooting.style="background:blue";
+            sendChannel.send("s");//通过webrtc发送数据
+                break;
+            case "touchend":
+                 shooting.style="background:red";
+                break;
+            case "touchmove":
+                 shooting.style="background:#000000";
+              xxxxx=0; yyyyy=0;
+            sendChannel.send("L");//通过webrtc发送数据
+            
+                break;
+        }
+         
+    }
+} 
+   load();
+      //-------------------------------------------触控------------------------
+  //----------------------------------------------陀螺仪--加速计-----------------------------
+var  OrientationDATA= document.getElementById("OrientationDATA");
+var  OrientationDATA1= document.getElementById("OrientationDATA1");
+var  devicemotionDATA= document.getElementById("devicemotionDATA");    
+var  devicemotionDATA1= document.getElementById("devicemotionDATA1");   
+      var x,y;
+      var xxx=0,xxxx=0,xxxxx=0;
+      var yyy=0,yyyy=0,yyyyy=0;
+      function deviceOrientationListener(evt) {  //陀螺仪处理函数
+OrientationDATA.innerHTML="陀螺仪(Orientation)<br/>";
+x=evt.alpha;OrientationDATA1.innerHTML="alpha:"+evt.alpha + "<br/>";
+y=evt.beta;OrientationDATA1.innerHTML+="beta:"+evt.beta + "<br/>";
+OrientationDATA1.innerHTML+="gamma:"+evt.gamma + "<br/>";
+        //    sendChannel.send(x + " " +y);//通过webrtc发送数据
+}
+      function deviceMotionHandler(evt) {  //加速计处理函数，只能检测某项大于1时才发送数据
+var accl = evt.acceleration;
+devicemotionDATA.innerHTML="加速计(Motion)<br/>";
+devicemotionDATA1.innerHTML="X:"+accl.x + "<br/>";
+devicemotionDATA1.innerHTML+="Y:"+accl.y + "<br/>";
+devicemotionDATA1.innerHTML+="Z:"+accl.z + "<br/>";
+     
+           if(Math.abs(accl.x) >= 0.08 || Math.abs(accl.y) >= 0.08 || Math.abs(accl.z) >= 0.08){       
+
+         if(!xxx){xxx=x;}else{
+           xxxx = x;
+           x = (xxx - x)*55;
+           xxxxx += x;
+           xxx=xxxx;
+         }
+         if(!yyy){yyy=y;}else{
+           yyyy = y;
+           y = (yyy - y)*55;
+           yyyyy += y;
+           yyy=yyyy;
+          
+          
+         } 
+
+         sendChannel.send(xxxxx + " " +yyyyy);//通过webrtc发送数据
+
+             
+        }
+}
+     
+      
+function deviceO() { //绑定手机陀螺仪消息
+if (window.DeviceOrientationEvent) {
+  window.addEventListener('deviceorientation', deviceOrientationListener, false);
+  window.addEventListener('MozOrientation', deviceOrientationListener, false);
+      } else {
+OrientationDATA1.innerHTML="doesn't support Device Orientation";
+      }
+  
+  if (window.DeviceMotionEvent) {
+  window.addEventListener('devicemotion', deviceMotionHandler, false);
+} else {
+  devicemotionDATA1.innerHTML = "doesn't support Device Motion";
+}
+    
+}
+    //-----------------------------------------陀螺仪----加速计-----------------------------------------
+      
+    </script>
+</body>
+</html>

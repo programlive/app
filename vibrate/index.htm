@@ -1,0 +1,124 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,minimal-ui" />
+	<title>Vibration 手机震动</title>
+	<style>
+	html,body{width:100%; height: 100%; padding: 0; margin: 0}
+	button{display: block; width : 100%; height: 50px; margin: 20px 0}
+	table {border-collapse: collapse; border-color: 1px solid #999; background-color: #fff; text-align: center}
+	footer p{
+  margin: 0 auto;
+  padding: 0;
+  font-family:none;
+  margin-top:0em;
+  font-size: 0.5em;
+  text-align: center;
+} 
+</style>
+<script src="../TJscript.js"></script>
+</head>
+<body>
+	<button value="2000">震动2秒</button>
+	<button value="6000">持续震动</button>
+	<button value="0">停止震动</button>
+<script>
+navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
+
+var vibrateInterval; 
+// Starts vibration at passed in level
+function startVibrate(duration) {
+navigator.vibrate(duration);
+} 
+
+// Stops vibration
+function stopVibrate() {
+// Clear interval and stop persistent vibrating 
+if(vibrateInterval) clearInterval(vibrateInterval);
+navigator.vibrate(0);
+} 
+
+// Start persistent vibration at given duration and interval
+// Assumes a number value is given
+function startPeristentVibrate(duration, interval) {
+vibrateInterval = setInterval(function() {
+startVibrate(duration);
+}, interval);
+} 
+
+document.addEventListener('touchend', function(e){
+	var target = e.target;
+	if(target.tagName.toLowerCase() == 'button'){ 
+		var value = target.getAttribute('value');
+if(value == 0){stopVibrate();}
+      else if(value == 6000){startVibrate(value);startPeristentVibrate(2000, 2000);}
+              else{startVibrate(value);}
+    
+    }}, false)
+
+</script>
+<div>
+	<table cellSpacing='0' width='100%' align='center' border='1'>
+		<thead>
+			<tr>
+				<td colspan=2>警告:注意防水</td>
+				<td>功能实现</td>
+				<td>停止震动</td>
+				<td>震动时间</td>
+				<td>震动间隔</td>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td rowspan=3>安卓</td>
+				<td>chrome</td>
+				<td>√</td>
+				<td>√</td>
+				<td>√</td>
+				<td>√</td>
+			</tr>
+			<tr>
+				<td>firefox</td>
+				<td>√</td>
+				<td>√</td>
+				<td>√</td>
+				<td>√</td>
+			</tr>
+			<tr>
+				<td>微信</td>
+				<td>√</td>
+				<td>×</td>
+				<td>√</td>
+				<td>×</td>
+			</tr>
+			<tr>
+				<td rowspan=3>ios</td>
+				<td>chrome</td>
+				<td>×</td>
+				<td>×</td>
+				<td>×</td>
+				<td>×</td>
+			</tr>
+			<tr>
+				<td>firefox</td>
+				<td>×</td>
+				<td>×</td>
+				<td>×</td>
+				<td>×</td>
+			</tr>
+			<tr>
+				<td>微信</td>
+				<td>×</td>
+				<td>×</td>
+				<td>×</td>
+				<td>×</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<footer>
+  <p>HTML5 WebApp: <a href="http://app.ruizhen.net/" target="_blank">app.ruizhen.net</a></p>
+</footer>
+</body>
+</html>

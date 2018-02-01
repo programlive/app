@@ -1,0 +1,80 @@
+﻿
+<html>
+  <head>
+    <style>
+      #container{
+        background:#D6CFC5;
+          width:30em;
+        
+      }
+       #parameter{
+margin:10px;  
+      }
+            #result{
+margin:10px;  
+      }
+    </style>
+    <script src="../TJscript.js"></script>
+  </head>
+  <body>
+    <div id="container"><p id="tilte"  style="text-align:center" >开间净高尺寸计算器</p>
+      <div id="parameter"><p id="tilte1">请输入参数</p>
+      <div id="parameter1">
+        H: <input size="5em" id="H1"/>
+        顶层抹灰厚度: <input size="2em" id="H2" value="15"/>
+        板厚: <input size="5em" id="H3" value="100"/></div>
+      <div id="parameter2">
+        <br/>
+        L: <input size="5em" id="L1"/>
+        墙1: <input size="5em" id="L2"/>
+        墙2: <input size="5em" id="L3"/>
+        </div>
+      <div id="parameter3">
+        <br/>
+        B: <input size="5em" id="B1"/>
+        墙1: <input size="5em" id="B2"/>
+        墙2: <input size="5em" id="B3"/>     
+<br/><br/>
+        墙面抹灰厚度: <input size="5em" id="BL"  value="20"/>
+        <button  id="count" style="width:12em;" onClick="count()"> 开始计算 </button>
+        </div>
+         
+      </div>
+       <div id="result"><p id="tilte2">H L B D 数值输出区</p>
+         <div id="result1">
+         H = <input size="30em" id="HH1"/>
+        = <input size="5em" id="HH2"/>
+         </div>   
+          <div id="result2">
+        <br/>
+        L = <input size="30em" id="LL1"/>
+        = <input size="5em" id="LL2"/>
+         </div>        
+        <div id="result3">
+        <br/>
+        B = <input size="30em" id="BB1"/>
+        = <input size="5em" id="BB2"/>
+         </div>        
+        <div id="result4">
+        <br/>
+        D = <input size="30em" id="DD1"/>
+        = <input size="5em" id="DD2"/>
+         </div>        
+        <div id="result5">
+        <br/>
+          计算结果(直接复制进资料软件即可) : <br/>
+          <input size="50em" id="HLBD"/>
+        
+         </div>            
+      </div>
+    </div>
+    
+   <script src="Script.js"></script>
+    
+    
+    
+  </body>
+  <footer>
+  <p>HTML5 WebApp: <a href="http://app.ruizhen.net/" target="_blank">app.ruizhen.net</a></p>
+</footer>
+ <html>

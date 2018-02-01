@@ -1,0 +1,14 @@
+﻿{
+  "name": "日期计算器-CountDate",
+  "description": "日期计算器,CountDate",
+  "launch_path": "/index.html",
+  "icons": {
+    "128": "/128.png",
+    "144": "/144.png"
+  },
+  "developer": {
+    "name": "ji chuan huang",
+    "url": "http://ruizhen.net/WebApp"
+  },
+  "default_locale": "en"
+}

@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<body>
+<script>
+  var strmsrc;
+    AudioContext = window.AudioContext||window.webkitAudioContext;
+    var audioctx = new AudioContext();
+   scr1 = audioctx.createScriptProcessor(1024);
+    navigator.getUserMedia=(navigator.getUserMedia||navigator.webkitGetUserMedia||navigator.mozGetUserMedia);
+    if(navigator.getUserMedia){
+    navigator.getUserMedia({audio:true},function(strm){
+    strmsrc = audioctx.createMediaStreamSource(strm);
+    str1 = strmsrc;
+    scr1.connect(audioctx.destination);
+    str1.connect(scr1);
+        },
+        function(err){
+          alert('getUserMedia Error.');
+        }.bind(this)
+      );
+    }
+    else{
+    alert('getUserMedia() not supported.');
+    }
+
+    scr1.onaudioprocess = function(ev){console.log("ok");
+  var out0=ev.outputBuffer.getChannelData(0);
+  var out1=ev.outputBuffer.getChannelData(1);
+  var in0=ev.inputBuffer.getChannelData(0);
+  var in1=ev.inputBuffer.getChannelData(1);
+  for(var i=0;i<ev.target.bufferSize;++i){
+    out0[i]=in0[i];
+    out1[i]=in1[i];
+  }
+};
+
+    
+
+</script>
+
+</body>
+</html>

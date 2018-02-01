@@ -1,0 +1,98 @@
+
+      body{margin:0;padding:0;background:BLACK}
+      #Title{
+        color: #FFF;
+  text-shadow: 0.02em 0.02em 0em #000;
+      font-size: 4em;
+  text-align: center;
+      }
+      .container{margin:15%;padding:0;}
+      .round{
+        margin:0;padding:0;
+        width:600px;
+        height:600px;
+        border-style: solid;
+        border-width: 2px;
+        border-radius: 100%;
+         position: absolute;
+        border-color:white;
+      }
+.one{
+        width:500px;
+        height:500px;
+  left: 50px;
+  top: 50px;
+      }
+.one2{
+        width:400px;
+        height:400px;
+  left: 100px;
+  top: 100px;
+      }
+.one3{
+        width:300px;
+        height:300px;
+  left: 150px;
+  top: 150px;
+      }
+.one4{
+        width:200px;
+        height:200px;
+  left: 200px;
+  top: 200px;
+      }
+.one5{
+        width:50px;
+        height:50px;
+  left: 275px;
+  top: 275px;
+      }
+.target{
+ background:red;
+  background-image: radial-gradient(40% 40% at 40% 60%,white,hsla(210,90%,60%,1));
+        width:50px;
+        height:50px;
+  left: 276px;
+  top: 276px;
+        border-width: 1px;
+      }
+.bbb{
+   left: -1px;
+      }
+.ggg{
+  top: -1px;
+      }
+     .cross{width:2px;height:600px;background:#fff;position:absolute;left:302px;top:1px;}
+    .two{width:600px;height:2px;left:1;top:302px;}
+      .object{    
+      margin:0;padding:0;
+        border-color:white;
+        width:50px;
+        height:600px;
+        border-style: solid;
+        border-width: 2px;
+        border-radius: 100%;
+         position: absolute;
+      left:602px;
+top:0px;
+line-height: 0px;
+   text-align:center;
+      }
+            .gamma{
+        width:600px;
+        height:50px;
+      left:0px;
+top:602px;
+      }
+      
+      
+      footer p{
+        color:white;
+  margin: 0 auto;
+  padding: 0;
+  font-family:none;
+  margin-top:150em;
+  font-size: 0.5em;
+  text-align: center;
+} 
+    

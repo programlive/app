@@ -1,0 +1,55 @@
+<html>
+  <body>
+    <div>
+     <video id="webcam"></video>
+    
+    </div>
+  <script>
+    navigator.getUserMedia  = navigator.getUserMedia ||
+                          navigator.webkitGetUserMedia ||
+                          navigator.mediaDevices.getUserMedia ||
+                          navigator.msGetUserMedia;
+
+if (navigator.getUserMedia) {
+    console.log("getUserMedia is ready!");
+
+var constraints = {video: true};
+function onSuccess(stream) {
+  var video = document.querySelector("#webcam");
+   
+	    video.src = window.URL.createObjectURL(stream);
+	video.autoplay = true; 
+	// Лђеп video.play();
+}
+
+function onError(error) {
+  console.log("navigator.getUserMedia error: ", error);
+}
+  navigator.getUserMedia(constraints, onSuccess, onError);
+ 
+} else {
+        console.log("getUserMedia is not support!");
+}
+   
+  if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+  console.log("enumerateDevices() not supported.");
+}
+
+// List cameras and microphones.
+
+navigator.mediaDevices.enumerateDevices()
+.then(function(devices) {
+  devices.forEach(function(device) {
+    console.log(device.kind + ": " + device.label +
+                " id = " + device.deviceId);
+  });
+})
+.catch(function(err) {
+  console.log(err.name + ": " + err.message);
+});  
+    
+    
+   
+    </script>
+  </body>
+</html>

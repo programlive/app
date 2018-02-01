@@ -1,0 +1,374 @@
+
+<!DOCTYPE html>
+<!--
+ *  Copyright (c) 2015 The WebRTC project authors. All Rights Reserved.
+ *
+ *  Use of this source code is governed by a BSD-style license
+ *  that can be found in the LICENSE file in the root of the source
+ *  tree.
+-->
+<html>
+<head>
+
+
+
+</head>
+
+<body>
+
+  <div id="container">
+    <div id="buttons">
+      <button id="startButtonA">StartA</button>
+       <button id="startButtonB">StartB</button>
+      <button id="sendButton" disabled>Send</button>
+      <button id="closeButton" disabled>Stop</button>
+    </div>
+
+    <div id="sendReceive">
+      <div id="send">
+        <h2>Send</h2>
+        <textarea id="dataChannelSend" disabled placeholder="Press Start, enter some text, then press Send."></textarea>
+      </div>
+      <div id="receive">
+        <h2>Receive</h2>
+        <textarea id="dataChannelReceive" disabled></textarea>
+      </div>
+    </div>
+  </div>
+      <div id="swap">
+        <h2>swap area</h2>
+        <textarea id="SwapArea" ></textarea>
+      </div>
+    <script src="https://webrtc.github.io/samples/src/js/adapter.js"></script>
+  <script src="https://webrtc.github.io/samples/src/js/common.js"></script>
+  <script >
+  var sendTEXT =  document.querySelector("#posttext");
+var xmlhttp;
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp1=new XMLHttpRequest();
+      xmlhttp2=new XMLHttpRequest();
+      xmlhttp3=new XMLHttpRequest();
+     xmlhttp4=new XMLHttpRequest();
+     xmlhttp5=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp1=new ActiveXObject("Microsoft.XMLHTTP");
+  xmlhttp2=new ActiveXObject("Microsoft.XMLHTTP");
+  xmlhttp3=new ActiveXObject("Microsoft.XMLHTTP");
+    xmlhttp4=new ActiveXObject("Microsoft.XMLHTTP");
+    xmlhttp5=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+    
+    var sdpLocal;//用于全局的描述报告
+    //---------------------ajax-------------------------------------------------------------------------
+var localConnection;
+var sendChannel;
+var dataChannelSend = document.querySelector('textarea#dataChannelSend');
+
+var remoteConnection;
+var receiveChannel;
+var dataChannelReceive = document.querySelector('textarea#dataChannelReceive');
+var SwapArea = document.querySelector('textarea#SwapArea');
+    //  SwapArea.value="RRR";
+var pcConstraint;
+var dataConstraint;
+var startButtonA = document.querySelector('button#startButtonA');
+var startButtonB = document.querySelector('button#startButtonB');
+var sendButton = document.querySelector('button#sendButton');
+var closeButton = document.querySelector('button#closeButton');
+startButtonA.onclick = createConnection;
+startButtonB.onclick = remoteC;
+sendButton.onclick = sendData;
+closeButton.onclick = closeDataChannels;
+
+function enableStartButton() {
+  startButtonA.disabled = false;
+  startButtonB.disabled = false;
+}
+
+function disableSendButton() {
+  sendButton.disabled = true;
+}
+
+function createConnection() {
+      
+  dataChannelSend.placeholder = '';
+  var servers = null;
+  pcConstraint = null;
+  dataConstraint = null;
+  trace('Using SCTP based data channels');
+  // SCTP is supported from Chrome 31 and is supported in FF.
+  // No need to pass DTLS constraint as it is on by default in Chrome 31.
+  // For SCTP, reliable and ordered is true by default.
+  // Add localConnection to global scope to make it visible
+  // from the browser console.
+  window.localConnection = localConnection =new RTCPeerConnection(servers, pcConstraint);
+  trace('Created local peer connection object localConnection');
+  sendChannel = localConnection.createDataChannel('sendDataChannel',dataConstraint);
+  trace('Created send data channel');
+
+  localConnection.onicecandidate = iceCallback1;
+  sendChannel.onopen = onSendChannelStateChange;
+  sendChannel.onclose = onSendChannelStateChange;
+   localConnection.createOffer().then(gotDescription1,onCreateSessionDescriptionError );
+  startButtonA.disabled = true;
+  closeButton.disabled = false;
+   
+}
+
+    
+    function  remoteC()
+    {
+  // Add remoteConnection to global scope to make it visible
+  // from the browser console.
+       CLEAN();
+  var servers = null;
+  window.remoteConnection = remoteConnection =new RTCPeerConnection(servers, pcConstraint);
+  trace('Created remote peer connection object remoteConnection');
+  remoteConnection.onicecandidate = iceCallback2;
+  remoteConnection.ondatachannel = receiveChannelCallback;
+ startButtonB.disabled = true;
+    }
+    
+    
+    
+function onCreateSessionDescriptionError(error) {
+  trace('Failed to create session description: ' + error.toString());
+}
+
+function sendData() {
+  var data = dataChannelSend.value;
+  sendChannel.send(data);
+  trace('Sent Data: ' + data);
+}
+
+function closeDataChannels() {
+  trace('Closing data channels');
+  sendChannel.close();
+  trace('Closed data channel with label: ' + sendChannel.label);
+  receiveChannel.close();
+  trace('Closed data channel with label: ' + receiveChannel.label);
+  localConnection.close();
+  remoteConnection.close();
+  localConnection = null;
+  remoteConnection = null;
+  trace('Closed peer connections');
+  startButtonA.disabled = false;
+  startButtonB.disabled = false;
+  sendButton.disabled = true;
+  closeButton.disabled = true;
+  dataChannelSend.value = '';
+  dataChannelReceive.value = '';
+  dataChannelSend.disabled = true;
+  disableSendButton();
+  enableStartButton();
+}
+
+
+    
+    
+    function gotDescription1(desc) {
+  localConnection.setLocalDescription(desc);
+  trace('Offer from localConnection \n' + desc.sdp);
+
+      // SwapArea.value=JSON.stringify(desc); //可以将json对象转换成json对符串 
+      //var rtc=JSON.parse(SwapArea.value);//可以将json字符串转换成json对象 
+      // rtc = new RTCSessionDescription(rtc);//json得OBJECT对象要转换回原本的对象
+    
+   
+
+      sdpLocal=JSON.stringify(desc);
+
+
+}
+  
+    function remotePC()
+    {
+      
+ var rtc=JSON.parse(SwapArea.value);//可以将json字符串转换成json对象 
+  rtc = new RTCSessionDescription(rtc);//json得OBJECT对象要转换回原本的对象
+   remoteConnection.setRemoteDescription(rtc);
+  remoteConnection.createAnswer().then(
+  gotDescription2,
+  onCreateSessionDescriptionError
+  );
+    
+    
+    }
+    
+    
+    
+function gotDescription2(desc) {
+  remoteConnection.setLocalDescription(desc);
+  trace('Answer from remoteConnection \n' + desc.sdp);
+
+  //CLEAN();
+      SEND(JSON.stringify(desc));
+      setTimeout("UPDATE()",1000);  
+      setTimeout("localPC()",1500);  
+  
+
+}
+
+        function localPC()
+    {
+      
+  var rtc=JSON.parse(SwapArea.value);//可以将json字符串转换成json对象 
+      console.log(rtc);
+  rtc = new RTCSessionDescription(rtc.sdp);//json得OBJECT对象要转换回原本的对象
+  localConnection.setRemoteDescription(rtc);
+        remoteConnection.createAnswer().then(
+    gotDescription2,
+    onCreateSessionDescriptionError
+  );
+     rtc = new RTCIceCandidate(rtc.ice);//json得OBJECT对象要转换回原本的对象
+      remoteConnection.addIceCandidate(rtc).then(
+      onAddIceCandidateSuccess,
+      onAddIceCandidateError      
+      );
+      
+      
+    }
+    
+    
+    
+    
+    
+function iceCallback1(event) {
+  trace('local ice callback');
+  if (event.candidate) {
+
+    //SwapArea.value=JSON.stringify(event.candidate); //可以将json对象转换成json对符串 
+    // var rtc=JSON.parse(SwapArea.value);//可以将json字符串转换成json对象 
+    // rtc = new RTCIceCandidate(rtc);//json得OBJECT对象要转换回原本的对象
+    //CLEAN();
+    SEND("{\"sdp\":"+sdpLocal+",\"ice\":"+JSON.stringify(event.candidate)+"}");
+      setTimeout("UPDATE()",1000);  
+      setTimeout("localPC()",1500);  
+
+    trace('Local ICE candidate: \n' + event.candidate.candidate);
+  }
+}
+    
+
+    
+
+function iceCallback2(event) {
+  trace('remote ice callback123');
+  if (event.candidate) {
+    //CLEAN();
+      SEND(JSON.stringify(event.candidate));
+      setTimeout("UPDATE()",1000);  
+      setTimeout("remoteIC()",1500);  
+   
+    trace('Remote ICE candidate: \n ' + event.candidate.candidate);
+  }
+}
+    
+    
+        function remoteIC()
+    {
+      
+      var rtc=JSON.parse(SwapArea.value);//可以将json字符串转换成json对象 
+     rtc = new RTCIceCandidate(rtc);//json得OBJECT对象要转换回原本的对象
+       localConnection.addIceCandidate(rtc).then(
+      onAddIceCandidateSuccess,
+      onAddIceCandidateError
+    );
+    
+    }
+    
+
+function onAddIceCandidateSuccess() {
+  trace('AddIceCandidate success.');
+}
+
+function onAddIceCandidateError(error) {
+  trace('Failed to add Ice Candidate: ' + error.toString());
+}
+
+function receiveChannelCallback(event) {
+  trace('Receive Channel Callback');
+  receiveChannel = event.channel;
+  receiveChannel.onmessage = onReceiveMessageCallback;
+  receiveChannel.onopen = onReceiveChannelStateChange;
+  receiveChannel.onclose = onReceiveChannelStateChange;
+}
+
+function onReceiveMessageCallback(event) {
+  trace('Received Message');
+  dataChannelReceive.value = event.data;
+}
+
+function onSendChannelStateChange() {
+  var readyState = sendChannel.readyState;
+  trace('Send channel state is: ' + readyState);
+  if (readyState === 'open') {
+    dataChannelSend.disabled = false;
+    // dataChannelReceive.disabled = false;
+    dataChannelSend.focus();
+    sendButton.disabled = false;
+    closeButton.disabled = false;
+  } else {
+    dataChannelSend.disabled = true;
+    sendButton.disabled = true;
+    closeButton.disabled = true;
+  }
+}
+
+function onReceiveChannelStateChange() {
+  var readyState = receiveChannel.readyState;
+  trace('Receive channel state is: ' + readyState);
+}
+   
+    
+    function SEND(swap)
+{ 
+xmlhttp2.open("POST","http://app.ruizhen.net/chat/test.php",true);
+xmlhttp2.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+  xmlhttp2.send("function=send&message="+encodeURI(encodeURI(swap))+"");
+
+ UPDATE();
+}
+
+    
+        function CLEAN()
+{ 
+xmlhttp1.open("POST","http://app.ruizhen.net/chat/test.php",true);
+xmlhttp1.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+ xmlhttp1.send("function=send&message=clean");
+
+
+ UPDATE();
+}
+    
+    
+    
+   
+    
+    function UPDATE()
+{
+xmlhttp3.open("POST","http://app.ruizhen.net/chat/test.php",true);
+xmlhttp3.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+xmlhttp3.send("function=update");
+xmlhttp3.onreadystatechange=function()
+  { 
+    if (xmlhttp3.readyState==4 && xmlhttp3.status==200)
+    {
+         var data = JSON.parse(xmlhttp3.responseText);
+      console.log(JSON.parse(data[0]));
+       SwapArea.value="";
+        if(data[0]){  
+         SwapArea.value= data[0];  
+  }
+    }
+  }
+} 
+  </script>
+
+
+</body>
+</html>
+  
