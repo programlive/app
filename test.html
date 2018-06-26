@@ -77,8 +77,12 @@ DDATA.innerHTML="acceleration<br/>";
 DDATA.innerHTML+="(red)X:"+accl.x + "<br/>";
 DDATA.innerHTML+="(blue)Y:"+accl.y + "<br/>";
 DDATA.innerHTML+="(green)Z:"+accl.z + "<br/>";
-DDATA.innerHTML+="buffer:"+x + "<br/>";
 }
+xxx.push(accl.x);
+yyy.push(accl.y);
+zzz.push(accl.z);
+var x=d3.range(xxx.length);
+plot("mysvg",x,xxx,yyy,zzz);
       }
      window.addEventListener("devicemotion", devicemotionListener, false);
  
