@@ -1,5 +1,5 @@
 <body>
-      <div id="devicemotionDATA"></div>
+      <div id="devicemotionDATA">2222</div>
     <canvas id="canvas" ></canvas>
   <button  id="start">start</button>
   <button  id="stop">stop</button>
@@ -111,9 +111,9 @@ ctx.fillText("-3----------------------------------------------------------------
 ctx.fillText("-7------------------------------------------------------------------------", 0, 148);
         }
     }
-
-   function devicemotionListener(evt) {
 var  DDATA= document.getElementById("devicemotionDATA");
+   function devicemotionListener(evt) {
+
 var accl = evt.acceleration;
 if (accl.x > 0.1 || accl.y > 0.1 || accl.z > 0.1) {
     mx=accl.x;
