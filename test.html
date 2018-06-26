@@ -1,72 +1,9 @@
 <body>
-      <div id="devicemotionDATA">2222</div>
+      <div id="devicemotionDATA">333</div>
       <svg id="mysvg"></svg>
 </body>
 <script>
-function plot(id,xxx,y1,y2,y3){
 
-var xy1=typeof(y1)==="undefined" ? 0 : d3.zip(xxx,y1);//输入值正确则纵向合并数组
-var xy2=typeof(y2)==="undefined" ? 0 : d3.zip(xxx,y2);
-var xy3=typeof(y3)==="undefined" ? 0 : d3.zip(xxx,y3);
-//var xy3=d3.zip(xxx,y3);//纵向合并数组
-//console.log(xxx.map((d,i)=>i)); 
-var height = 300;
-var width = 500;
-var svg = d3.select("#"+ id).attr("width",width).attr("height",height);
-document.querySelector('#'+ id).innerHTML = '';//清除svg子节点
-var padding = {top:10, right:10, bottom:30, left:30};
-var xAxisWidth = width;
-var yAxisWidth = height;
-var xScale = d3.scaleLinear().domain([d3.min(xxx),d3.max(xxx)]).range([0,width - padding.right - padding.left]);
-var yScale = d3.scaleLinear().domain([d3.min(y1),d3.max(y1)]).range([yAxisWidth - padding.top - padding.bottom,0]);
-//画轴线 
-var xAxis = d3.axisBottom()
-.scale(xScale)
-.tickSize(-yAxisWidth,0,0)//添加网格
-.ticks(10);
-svg.append("g")
-.attr("transform","translate(" + padding.left + "," + (height - padding.bottom) +  ")")
-  .call(xAxis);
-var yAxis = d3.axisLeft()
-.scale(yScale)
-.tickSize(-xAxisWidth,0,0).ticks(10);//添加网格
-
-
-svg.append("g")
-  .attr("transform","translate(" + padding.left + "," + padding.top +  ")")
-  .call(yAxis);            
-            
-
-//绘制线1
- var linePath = d3.line()
- .curve(d3.curveCardinal.tension(0.5))
- .x( function(d){ return padding.left + xScale(d[0]);})
- .y( function(d){ return padding.top + yScale(d[1]);});
- svg.append("path")
-   .attr("d", linePath(xy1))
-   .attr("stroke-width", "2px") 
-   .attr("stroke", "blue") 
-   .attr("fill", "none");
-
- //绘制线2
- linePath.curve(d3.curveCardinal.tension(0.5))
- .x( function(d){ return padding.left + xScale(d[0]);})
- .y( function(d){ return padding.top + yScale(d[1]);});
- svg.append("path")
-   .attr("d", linePath(xy2))
-   .attr("stroke-width", "2px") 
-   .attr("stroke", "red") 
-   .attr("fill", "none");
-  //绘制线3
- linePath.curve(d3.curveCardinal.tension(0.5))
- .x( function(d){ return padding.left + xScale(d[0]);})
- .y( function(d){ return padding.top + yScale(d[1]);});
- svg.append("path")
-   .attr("d", linePath(xy3))
-   .attr("stroke-width", "2px") 
-   .attr("stroke", "green") 
-   .attr("fill", "none");
-}
       
       
 var  DDATA= document.getElementById("devicemotionDATA");
@@ -74,11 +11,6 @@ var  DDATA= document.getElementById("devicemotionDATA");
       
 function devicemotionListener(evt) {
 var accl = evt.acceleration;
-xxx.push(accl.x);
-yyy.push(accl.y);
-zzz.push(accl.z);
-var x=d3.range(xxx.length);
-plot("mysvg",x,xxx,yyy,zzz);
 if (accl.x > 0.1 || accl.y > 0.1 || accl.z > 0.1) {
     mx=accl.x;
     my=accl.y;
