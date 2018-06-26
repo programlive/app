@@ -6,7 +6,7 @@
 <script>      
 var  DDATA= document.getElementById("devicemotionDATA");
 xxx = [];yyy = [];zzz = [];
-var displaySize = 500;//显示去的显示数量
+var displaySize = 200;//显示去的显示数量
 function plot(id,xxx,y1,y2,y3){
 
 var xy1=typeof(y1)==="undefined" ? 0 : d3.zip(xxx,y1);//输入值正确则纵向合并数组
@@ -22,7 +22,9 @@ var padding = {top:10, right:10, bottom:30, left:30};
 var xAxisWidth = width;
 var yAxisWidth = height;
 var xScale = d3.scaleLinear().domain([0,displaySize]).range([0,width - padding.right - padding.left]);
-var yScale = d3.scaleLinear().domain([d3.min(y1),d3.max(y1)]).range([yAxisWidth - padding.top - padding.bottom,0]);
+var minn = d3.min([d3.min(y1),d3.min(y2),d3.min(y3)]);
+var maxx = d3.max([d3.max(y1),d3.max(y2),d3.max(y3)]);
+var yScale = d3.scaleLinear().domain([minn,maxx]).range([yAxisWidth - padding.top - padding.bottom,0]);
 //画轴线 
 var xAxis = d3.axisBottom()
 .scale(xScale)
