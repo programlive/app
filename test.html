@@ -6,7 +6,7 @@
 <script>      
 var  DDATA= document.getElementById("devicemotionDATA");
 xxx = [];yyy = [];zzz = [];
-var displaySize = 200;//显示去的显示数量
+var displaySize = 220;//显示去的显示数量
 function plot(id,xxx,y1,y2,y3){
 
 var xy1=typeof(y1)==="undefined" ? 0 : d3.zip(xxx,y1);//输入值正确则纵向合并数组
@@ -75,15 +75,17 @@ svg.append("g")
 }
 function devicemotionListener(evt) {
 var accl = evt.acceleration;
+xxx.push(accl.x);
+yyy.push(accl.y);
+zzz.push(accl.z);
 if (accl.x > 0.1 || accl.y > 0.1 || accl.z > 0.1) {
 DDATA.innerHTML="acceleration<br/>";
 DDATA.innerHTML+="(red)X:"+accl.x + "<br/>";
 DDATA.innerHTML+="(blue)Y:"+accl.y + "<br/>";
 DDATA.innerHTML+="(green)Z:"+accl.z + "<br/>";
+DDATA.innerHTML+="buf:"+(xxx.lenght * 3) ;
 }
-xxx.push(accl.x);
-yyy.push(accl.y);
-zzz.push(accl.z);
+
 var displayDatax = xxx.slice(-displaySize,-1);//裁剪一定范围的数据用与显示
 var displayDatay = yyy.slice(-displaySize,-1);//裁剪一定范围的数据用与显示
 var displayDataz = zzz.slice(-displaySize,-1);//裁剪一定范围的数据用与显示
