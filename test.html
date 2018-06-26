@@ -6,7 +6,7 @@
 <script>      
 var  DDATA= document.getElementById("devicemotionDATA");
 xxx = [];yyy = [];zzz = [];
-
+var displaySize = 20480;//显示去的显示数量
 function plot(id,xxx,y1,y2,y3){
 
 var xy1=typeof(y1)==="undefined" ? 0 : d3.zip(xxx,y1);//输入值正确则纵向合并数组
@@ -21,7 +21,7 @@ document.querySelector('#'+ id).innerHTML = '';//清除svg子节点
 var padding = {top:10, right:10, bottom:30, left:30};
 var xAxisWidth = width;
 var yAxisWidth = height;
-var xScale = d3.scaleLinear().domain([d3.min(xxx),d3.max(xxx)]).range([0,width - padding.right - padding.left]);
+var xScale = d3.scaleLinear().domain([0,displaySize]).range([0,width - padding.right - padding.left]);
 var yScale = d3.scaleLinear().domain([d3.min(y1),d3.max(y1)]).range([yAxisWidth - padding.top - padding.bottom,0]);
 //画轴线 
 var xAxis = d3.axisBottom()
@@ -82,8 +82,11 @@ DDATA.innerHTML+="(green)Z:"+accl.z + "<br/>";
 xxx.push(accl.x);
 yyy.push(accl.y);
 zzz.push(accl.z);
-var x=d3.range(xxx.length);
-plot("mysvg",x,xxx,yyy,zzz);
+var displayDatax = xxx.slice(-displaySize,-1);//裁剪一定范围的数据用与显示
+var displayDatay = yyy.slice(-displaySize,-1);//裁剪一定范围的数据用与显示
+var displayDataz = zzz.slice(-displaySize,-1);//裁剪一定范围的数据用与显示
+var x=d3.range(displayDatax.length);
+plot("mysvg",x,displayDatax,displayDatay,displayDataz);
       }
      window.addEventListener("devicemotion", devicemotionListener, false);
  
