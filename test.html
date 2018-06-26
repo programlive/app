@@ -10,7 +10,7 @@ var  DDATA= document.getElementById("devicemotionDATA");
 var accl = evt.acceleration;
    document.write(count++);
 document.write(accl.x, accl.y, accl.z );
-if (accl.x > 0.1 || accl.y > 0.1 || accl.z > 0.1) {
+if (accl.x > 0.1) {
     mx=accl.x;
     my=accl.y;
     mz=accl.z;
