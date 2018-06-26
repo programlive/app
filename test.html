@@ -1,0 +1,27 @@
+﻿<body>
+  <div id="devicemotionDATA"></div>
+123456789
+</body>
+<script>
+var count = 0;
+function devicemotionListener(evt) {
+  
+var  DDATA= document.getElementById("devicemotionDATA");
+var accl = evt.acceleration;
+   document.write(count++);
+document.write(accl.x, accl.y, accl.z );
+if (accl.x > 0.1 || accl.y > 0.1 || accl.z > 0.1) {
+    mx=accl.x;
+    my=accl.y;
+    mz=accl.z;
+ 
+DDATA.innerHTML="acceleration<br/>";
+DDATA.innerHTML+="(red)X:"+accl.x + "<br/>";
+DDATA.innerHTML+="(blue)Y:"+accl.y + "<br/>";
+DDATA.innerHTML+="(green)Z:"+accl.z + "<br/>";
+DDATA.innerHTML+="buffer:"+x + "<br/>";
+}
+      }
+
+window.addEventListener("devicemotion", devicemotionListener, false);
+</script>
