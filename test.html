@@ -9,7 +9,7 @@ function devicemotionListener(evt) {
 var  DDATA= document.getElementById("devicemotionDATA");
 var accl = evt.acceleration;
    document.write(count++);
-document.write(accl.x, accl.y, accl.z );
+document.write(accl.x);
 if (accl.x > 0.1) {
     mx=accl.x;
     my=accl.y;
