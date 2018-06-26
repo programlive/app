@@ -73,9 +73,6 @@ svg.append("g")
 function devicemotionListener(evt) {
 var accl = evt.acceleration;
 if (accl.x > 0.1 || accl.y > 0.1 || accl.z > 0.1) {
-    mx=accl.x;
-    my=accl.y;
-    mz=accl.z;
 DDATA.innerHTML="acceleration<br/>";
 DDATA.innerHTML+="(red)X:"+accl.x + "<br/>";
 DDATA.innerHTML+="(blue)Y:"+accl.y + "<br/>";
