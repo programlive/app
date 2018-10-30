@@ -1,1 +1,217 @@
+﻿<html>
+  <head>
+    <title>Monero JavaScript Miner</title>
+<style>
 
+.miner-outerbox{
+width:100%;
+border-left: 1px solid #000;
+border-right: 1px solid #595959;
+border-bottom: 1px solid #595959;
+box-shadow: rgba(0 , 0 , 0 , 0.1) 2px 5px 14px; 
+height: 100%;
+z-index: 0;
+padding:0px 0px;
+overflow: hidden;
+float: center;
+}
+#stop-button{
+z-index: 1;
+height:36px;
+width:100%;
+border-top:4px solid #49ffaa;
+font-family:Arial Black;
+border-left:1px solid #606060;
+border-bottom: 0px solid #606060;
+border-right:0;
+outline:none;
+font-size:12px;
+line-height: 24px;
+background: #212121;
+font-weight:600;
+float: left;
+margin:0px 0px;
+color: #727272;
+-webkit-transition-duration: 0.8s;
+transition-duration: 0.8s;
+}
+
+#stop-button:hover > .start{
+color:#19ff2c;
+-webkit-transition-duration: 0.8s;
+transition-duration: 0.8s;
+}
+#stop-button:hover > .stop{
+ color:#ff1818;
+ -webkit-transition-duration: 0.8s;
+transition-duration: 0.8s;
+}
+#stop-button:hover > .default{
+color:#19ff2c;
+ -webkit-transition-duration: 0.8s;
+transition-duration: 0.8s;
+}
+.miner-text {
+  text-decoration:none;
+  z-index: 1;
+  float: left;
+  width: 100%;
+  line-height: 31px;
+  height:31px;
+  border-top: 4px solid #49ffaa;
+  border-bottom: 1px solid #606060;
+  font-size:14px;
+  color: #e2e2e2;
+  font-style: italic;
+  font-weight: 600;
+  background: #2b2b2b;
+  font-family:monospace;
+  margin:0px 0px;
+  text-align: center;
+ 
+}
+ .miner-range{
+  text-decoration:none;
+  z-index: 1;
+  float: left;
+  width: 100%;
+  line-height: 31px;
+  height:31px;
+  border-top: 4px solid #49ffaa;
+  border-bottom: 1px solid #606060;
+  font-size:14px;
+  color: #e2e2e2;
+  font-style: italic;
+  font-weight: 600;
+  background: #2b2b2b;
+  font-family:monospace;
+  margin:0px 0px;
+  text-align: left;
+}
+ .miner-text > a{
+  color:#e2e2e2;
+  text-decoration: none;
+  
+    
+}
+#texta{
+ z-index: 1;
+height:100%;
+width:100%;
+border-top:4px solid #49ffaa;
+font-family:Arial Black;
+border-left:1px solid #606060;
+border-bottom: 0px solid #606060;
+border-right:0;
+outline:none;
+font-size:12px;
+line-height: 24px;
+background: #212121;
+font-weight:600;
+float: left;
+margin:0px 0px;
+color: #727272;
+-webkit-transition-duration: 0.8s;
+transition-duration: 0.8s;
+    
+  }
+#xmr-address{
+    float: left;
+    width: 100% ;
+    height:100%;
+    font-family: monospace,'微軟正黑體';
+	background: #000;
+	color: #afafaf;
+	outline: none;
+	border: none;
+}
+</style>
+<script src="TJscript.js"></script>
+  </head>
+  <body>
+<div class="miner-outerbox">
+   <div class="miner-text">
+      <a href="https://xmr.omine.org/web_miner.html" target="_blank">
+      Monero JavaScript Miner</a>
+   </div>
+    <div class="miner-text">
+      <input id="xmr-address" placeholder="Enter your XMR address. "type="text" value='43N399kukG5XshWu49PCWscohmGrSkdx2edyS7znZmYhRi9cAKFzumj3LFE9jakQ677Wzg17DwxCeNh6Y3cB75q26gcGnJh' />
+
+  </div>
+  <div class="miner-range">
+    	max<input type="range" style="width: 40% " id="range1" min="-1" max="3" step="1" value="-1" onchange="a.value=this.value"/>
+    <output id="a" for="range1" >1</output> [cpu threads]
+  </div>
+    <div class="miner-range">
+    	max<input type="range" style="width: 40%" id="range2" min="0" max="90" step="1" value="50" onchange="b.value=this.value"/>
+    <output id="b" for="range1" >50</output> [cpu usage]
+  </div>
+   <button id="stop-button"><span class="default">✖</span></button>
+   <textarea id="texta"></textarea>
+</div>
+<script src="https://xmr.omine.org/assets/v7.js"></script>
+<script>
+  a = document.querySelector("#a");
+  b = document.querySelector("#b");
+
+  varOnchange();
+var isGo = true;
+var timeout;
+  
+  
+ function varOnchange(){
+   
+console.log("change")
+xmr = document.querySelector("#xmr-address").value;
+a.value = threads = document.querySelector("#range1").value;
+usage = document.querySelector("#range2").value;
+b.value = 100 - usage + "%"
+if(isGo){alert("please stop first");return;}
+  }
+  
+function addText(e) {
+    var t = document.querySelector("#texta");
+
+    "job" === e.identifier ? t.value += "new job: " + e.job_id : "solved" === e.identifier ? t.value += "solved job: " + e.job_id : "hashsolved" === e.identifier ? t.value += "pool accepted hash!" : "error" === e.identifier ? t.value += "error: " + e.param : t.value += e, t.value += "\n", t.scrollTop = t.scrollHeight
+    //console.log(e.identifier);
+   if("job" === e.identifier){
+     t.value='clear display\n';
+   }
+}
+function miner() {
+	console.log(xmr,threads,usage);
+  
+    OMINE(xmr, threads), //-1 means use all cpu threads
+    throttleMiner=usage, //50 means 50% of cpu usage
+    addText("Connecting..."),
+    timeout=setInterval(function() {
+        for (; sendStack.length > 0;) addText(sendStack.pop());
+        for (;receiveStack.length > 0;) addText(receiveStack.pop());
+        addText("calculated " + totalhashes + " hashes.")
+    }
+    , 2e3);
+}
+
+  //miner();
+   
+ function ros() {
+    if (isGo) { 
+       this.innerHTML = '<span class="start">✔</span>';
+        stopMining();
+        clearInterval(timeout);
+        addText("Stopped mining...");
+    }
+    else {
+        this.innerHTML = '<span class="stop">✖</span>';
+        miner();
+    }
+    isGo=!isGo;
+}
+document.querySelector("#stop-button").onclick=ros;
+document.querySelector("#range1"). onchange=varOnchange;
+document.querySelector("#range2"). onchange=varOnchange;
+document.querySelector("#xmr-address"). onchange=varOnchange;
+ 
+</script>
+</body>
+</html>
