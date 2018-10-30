@@ -2,7 +2,9 @@
   <head>
     <title>Monero JavaScript Miner</title>
 <style>
-
+  body{
+    background:black;
+  }
 .miner-outerbox{
 width:100%;
 border-left: 1px solid #000;
@@ -96,7 +98,7 @@ transition-duration: 0.8s;
 }
 #texta{
  z-index: 1;
-height:100%;
+height:70%;
 width:100%;
 border-top:4px solid #49ffaa;
 font-family:Arial Black;
@@ -125,6 +127,20 @@ transition-duration: 0.8s;
 	outline: none;
 	border: none;
 }
+  
+      footer p{
+      
+  margin-top: 40px;
+  padding: 0;
+      color:#888;
+  font-family:none;
+      text-decoration:none;
+  font-size: 1em;
+  text-align: center;
+} 
+    a:link{color:#706A5E; text-decoration:none;   }
+  a:visited{color:#706A5E;text-decoration:none;   }   
+
 </style>
 <script src="TJscript.js"></script>
   </head>
@@ -149,7 +165,7 @@ transition-duration: 0.8s;
 
     <div>
    <button id="stop-button"><span class="default">✖</span></button>
-   <textarea id="texta"></textarea>
+   <text id="texta"></textarea>
 </div>
 <script src="https://xmr.omine.org/assets/v7.js"></script>
 <script>
@@ -192,7 +208,7 @@ function miner() {
     , 2e3);
 }
 
-  miner();
+  //miner();
    
  function ros() {
     if (isGo) { 
@@ -215,4 +231,8 @@ document.querySelector("#xmr-address"). onchange=varOnchange;
  
 </script>
 </body>
+  
+    <footer>
+  <p>HTML5 WebApp: <a href="http://app.ruizhen.net/" target="_blank">http://app.ruizhen.net/</a></p>
+</footer>
 </html>
