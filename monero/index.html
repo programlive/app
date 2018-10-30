@@ -1,4 +1,4 @@
-﻿<html>
+<html>
   <head>
     <title>Monero JavaScript Miner</title>
 <style>
@@ -25,7 +25,7 @@ border-left:1px solid #606060;
 border-bottom: 0px solid #606060;
 border-right:0;
 outline:none;
-font-size:12px;
+font-size:20px;
 line-height: 24px;
 background: #212121;
 font-weight:600;
@@ -60,7 +60,7 @@ transition-duration: 0.8s;
   height:31px;
   border-top: 4px solid #49ffaa;
   border-bottom: 1px solid #606060;
-  font-size:14px;
+  font-size:20px;
   color: #e2e2e2;
   font-style: italic;
   font-weight: 600;
@@ -79,7 +79,7 @@ transition-duration: 0.8s;
   height:31px;
   border-top: 4px solid #49ffaa;
   border-bottom: 1px solid #606060;
-  font-size:14px;
+  font-size:20px;
   color: #e2e2e2;
   font-style: italic;
   font-weight: 600;
@@ -129,7 +129,7 @@ transition-duration: 0.8s;
 <script src="TJscript.js"></script>
   </head>
   <body>
-<div class="miner-outerbox">
+
    <div class="miner-text">
       <a href="https://xmr.omine.org/web_miner.html" target="_blank">
       Monero JavaScript Miner</a>
@@ -146,6 +146,8 @@ transition-duration: 0.8s;
     	max<input type="range" style="width: 40%" id="range2" min="0" max="90" step="1" value="50" onchange="b.value=this.value"/>
     <output id="b" for="range1" >50</output> [cpu usage]
   </div>
+
+    <div>
    <button id="stop-button"><span class="default">✖</span></button>
    <textarea id="texta"></textarea>
 </div>
@@ -153,7 +155,7 @@ transition-duration: 0.8s;
 <script>
   a = document.querySelector("#a");
   b = document.querySelector("#b");
-
+  t = document.querySelector("#texta");
   varOnchange();
 var isGo = true;
 var timeout;
@@ -170,8 +172,6 @@ if(isGo){alert("please stop first");return;}
   }
   
 function addText(e) {
-    var t = document.querySelector("#texta");
-
     "job" === e.identifier ? t.value += "new job: " + e.job_id : "solved" === e.identifier ? t.value += "solved job: " + e.job_id : "hashsolved" === e.identifier ? t.value += "pool accepted hash!" : "error" === e.identifier ? t.value += "error: " + e.param : t.value += e, t.value += "\n", t.scrollTop = t.scrollHeight
     //console.log(e.identifier);
    if("job" === e.identifier){
@@ -203,6 +203,7 @@ function miner() {
     }
     else {
         this.innerHTML = '<span class="stop">✖</span>';
+      t.value='';
         miner();
     }
     isGo=!isGo;
